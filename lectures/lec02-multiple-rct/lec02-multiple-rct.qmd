@@ -11,7 +11,7 @@ format:
     width: 1600 
     height: 900 
     echo: true
-    theme: [default, custom.scss]
+    theme: [default, ../custom.scss]
     show-notes: false
 ---
 
@@ -38,7 +38,7 @@ format:
 # Today's science
 
 ```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("img/fda.png")
+knitr::include_graphics("fda.png")
 ```
 
 
@@ -501,7 +501,7 @@ This is bigger than the worst case probability of approving a treatment with no 
 ::: columns
 ::: {.column width="50%"}
 ```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("img/bonferroni-power.png")
+knitr::include_graphics("bonferroni-power.png")
 ```
 :::
 
