@@ -1,5 +1,5 @@
 ---
-title: "Topic 3: Multiple Testing and the Microarray Revolution"
+title: "Multiple Testing and Genomics"
 author: "Lucy Gao"
 date: "Jan 23 2024"
 date-format: long
@@ -7,289 +7,730 @@ format:
   revealjs:
     chalkboard: true
     slide-number: c/t
-    width: 1600
-    height: 900
+    slide-level: 1
+    width: 1600 
+    height: 900 
     echo: true
-    theme: [default, custom.scss]
+    theme: [default, ../custom.scss]
     show-notes: false
 ---
 
-# Learning objectives for today
 
--   Introduce scientific problems involving multiple testing/comparisons in genomics
--   Introduce false discovery rate
--   Introduce **one** method for how to control FDR (Benjamini-Hochberg)
--   Learn about why FDR control was popularized in genomics
--   Increase understanding the factors that determine whether and how we adjust our inferences when making multiple inferences
+# Today's science: genomics
 
-# Recall: Multiple Testing
+:::: {.columns} 
 
-**My definition**: Whenever we conduct more than one hypothesis test in a single analysis, and look at the outcome of all of them.
+::: {.column width="50%"}
 
--   Does this cause problems?
--   And if so, what are they?
-
-> **"I don't know, it depends on the scientific problem at hand."** - My annoying partner, whenever I ask him ANY question involving statistics.
-
-# Recall: Phase III clinical trials
-
-**Relatively few** hypotheses tested:
-
--   One hypothesis per measured endpoint/outcome
-
-Hypotheses tested are **carefully chosen**:
-
--   Treatments go through a very extensive screening process before reaching Phase III
--   Endpoints are very carefully chosen based on clinical considerations
-
-False positives are **extremely** costly:
-
--   Last stage before the treatment goes on market
--   Results inform market labelling
--   Federal agency involving medical considerations: ENORMOUS potential for political fallout
-
-# Today's science
 
 ```{r, echo = FALSE, fig.align='center'}
-knitr::include_graphics("img/microarray.png")
+knitr::include_graphics("microarray.png")
 ```
 
-A VERY different setting than last week's science ...
+::: 
 
-# Microarray chip
-
-::: columns
 ::: {.column width="50%"}
-```{r, echo = FALSE, fig.align='center', out.width="70%"}
-knitr::include_graphics("img/microarray-chip.png")
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("microarray-chip.png")
+```
+::: 
+
+::::
+
+::: {.notes} 
+- Expression level: counts mRNA transcripts  
+- From "single gene" study (e.g. genetics) to lots of genes (genomics)
+- First microarrays, then NGS
+- Now also single-cell, spatial single-cell, etc. 
+::: 
+
+# Differential gene expression  
+
+Suppose we have the expression level measurements for $M$ genes on $n$ observations, where observations belong to one of two (labelled) experimental conditions or populations.
+
+. . .
+
+<br> 
+
+**Questions**: Across the two (labelled) conditions/populations/etc., is gene $j$ expressed at different levels, for all $j = 1, 2, \ldots, M$? 
+
+. . .
+
+<br> 
+
+**Statistically**, a (large-scale) two-group testing problem: 
+
+::: {.incremental} 
+
+- View observations in each group as sample from superpopulation 
+- Compare the marginal (per-gene) distributions for sampling from superpopulations (i.e. $F_X$ and $F_Y$) with respect to a chosen functional, e.g. mean or (sort of) median 
+::: 
+
+::: {.notes} 
+
+- Eg. Mutant vs wild type mice 
+- Eg. Healthy vs cancerous tissue 
+
+::: 
+
+# Scientific goals
+
+What is the role of these hypothesis tests? 
+
+::: {.incremental} 
+
+- In a nutshell, screening! Genes that "pass" through the filter are subjected to expensive and thorough validation experiments.
+::: 
+
+. . . 
+
+Overall philosophy: 
+
+::: {.incremental} 
+
+-   We want to get a moderately sized list of genes that seem like promising candidates for further investigation, and we want it fast and cheap.
+
+-   The "cost" of a false positive is that we waste resources on validating a red herring.
+
+-   **Key idea**: We can live with (say) 10% of our resources going to waste in the follow-up phase.
+
+-   After all, we have already saved a bunch of time and money by not investigating every gene in the full list!
+
+::: 
+
+::: {.notes} 
+- The genes aren't carefully chosen. They're just whatever we can measure. (measurement is cheap, since it's parallel!) 
+- So it makes sense to use the hypothesis test as a simple screen (rather than a super confirmational paradigm)
+- The rejections are not the end of a story. They are the beginning of many. 
+- Validation: bioinformatic efforst, wet lab efforts 
+::: 
+
+# Screen and clean in biology
+
+This "screen and clean" philosophy is pervasive in high-throughput biological data contexts. 
+
+<br> 
+
+. . . 
+
+Ex. **Genome-wide association studies**: Measure tons of genetic markers and an observable characteristic. Test for association between all of the genetic variant and observable characteristics. 
+
+. . .
+
+<br> 
+
+Ex. **Neuroimaging**: Simultaneously measure activity across the whole brain; divide up into 3d pixels (voxels), and test for differences between condition at all voxels. 
+
+
+::: {.notes} 
+- Realy this is a story about high throuput biology. 
+- even more generally: whenever there is lots of data and there is complex and/or noisy data, you will probably see multiple testing ...  
+::: 
+
+# What do we care about? 
+
+Naively, based on last week, might say we care about the FWER: probability of falsely rejecting at least one null hypothesis. That was (sometimes) sensible for last week. 
+
+. . . 
+
+<br> 
+
+**This is not sensible this week.**  
+
+::: {.incremental} 
+
+- Why should we behave like we care so much about a single false positive? It's not a catastrophe, it's just inconvenient! 
+
+- With thousands or millions of tests, FWER controlling procedures can return very few rejections indeed. Is such an aggressive screen useful? 
+
+::: 
+
+<br> 
+
+. . .
+
+A new concept emerges: we care about the **proportion of resources wasted on red herrings in the validation experiments**, as well as the **number of validation experiments we get to do**.  
+
+
+::: {.notes} 
+- Think about Bonferroni: alpha/M
+::: 
+
+
+# False discovery proportion
+
+On the **proportion of resources wasted on red herrings in the validation experiments**: 
+
+- Assume that the follow-up cost is the same for each gene 
+- Assume that cost is wasted for null genes
+
+. . .
+
+Let $X \sim F_X$ represent the data with which we test $H_{0j}: T_j(F_X) = 0$ for all $j = 1, 2, \ldots, p$.  Let the follow-up cost for each gene be $C$.
+
+. . .
+
+Then, the "wasted" cost over the total cost is: 
+$$
+\begin{align} 
+\text{FDP}(X) &=\frac{C | \{j : F_X \in \mathcal{F}_{0j} \text{ and } p_j(X) \leq \alpha\}|}{C | \{ j: p_j(X) \leq \alpha \}|}, ~~~ \text{ for } \mathcal{F}_{0j} \equiv \{ F: T_j(F) = 0\} \\ 
+&= \frac{| \{j : F_X \in \mathcal{F}_{0j} \text{ and } p_j(X) \leq \alpha\}|}{| \{ j: p_j(X) \leq \alpha \}|}  \\ 
+&= \frac{\text{Number of false discoveries}}{\text{Number of discoveries}} ~~~~ \text{(nb. take convention of } 0/0 = 0 \text{.)}
+\end{align} 
+$$ 
+
+::: {.notes} 
+- Numerator: Resources wasted on chasing red herrings 
+- Denominator: Total follow-up efforts
+- Numerator: Total number of falsely rejected
+::: 
+
+# FDP via contingency table
+
+Suppose that we test $H_{0j}: T_j(F_X) \in \Theta_0$ for all $j = 1, 2, \ldots, M$ using a random variable $X \sim F_X$. Define the following notation:
+
+|                | $H_{0j}$ retained | $H_{0j}$ rejected | Total |
+|----------------|-------------------|-------------------|-------|
+| $H_{0j}$ true  | $TN(X)$           | $FD(X)$           | $M_0$ |
+| $H_{0j}$ false | $FN(X)$           | $TD(X)$           | $M_1$ |
+| Total          | $N(X)$            | $R(X)$            | $M$   |
+
+. . . 
+
+Then, can write the false discovery proportion as: 
+
+$$ \text{FDP}(X) = \frac{\text{FD}(X)}{\max \{1, R(X)\}}.$$ 
+This computes *vertically*. Contrast the *horizontal* false positive proportion ($\frac{\text{FD}(X)}{M_0}$) or FWER. 
+
+
+::: {.notes} 
+- Verbally go through what are random variables 
+- Traditional point null hypothesis criteria: don't care about second row when defining error rates
+- can think about this as vaguely bayesian flavoured 
+- you will investigate FPP in homework
+::: 
+
+# FDP and FDR 
+
+We have a compelling reason to care about the FDP in this context: 
+
+$$ \text{FDP}(X) = \frac{\text{FD}(X)}{\max \{1, R(X)\}}.$$  
+
+. . .
+
+But we can't "control the FDP" in any single study: it's a random variable. Instead, think about controlling its expectation, the *false discovery rate*:
+
+$$ \text{FDR} = \mathbb{E}_{F_X}[\text{FDP}(X)].$$ 
+
+
+. . . 
+
+
+More scientifically: if we were to **repeat** the process of a differential gene expression analysis study followed up by validation experiments on the discoveries, then the average proportion of resources wasted per study across these repeats is the FDR. 
+
+- Assuming again follow-up cost uniform across genes. 
+
+# Your turn: interpreting FDR
+
+Imagine you are working with a genome scientist to analyze their RNA sequencing data. You apply a procedure that controls FDR at level $10\%$ to their data set, and reject 100 null hypotheses. Your collaborator says:
+
+> "Oh, so no more than 10 genes out of that 100 really are differentially expressed?"
+
+What is your answer?
+
+. . . 
+
+<br> 
+
+What if your collaborator had said instead: 
+
+> "Oh, so about 10 genes out of that 100 really are differentially expressed?"
+
+What is your answer?
+
+
+# Follow-up: interpreting FDR 
+
+$$ \text{FDR} = \mathbb{E}_{F_X} \left [\frac{\text{FD}(X)}{\max \{1, R(X)\}} \right ]$$
+
+. . .
+
+1. FDR = $\alpha$ clearly doesn't imply that $\text{R(X)} \cdot \alpha$ upper bounds the number of false discoveries. 
+
+
+::: {.incremental} 
+- In fact, since $R(X)$ is random, this is a nonsensical thing to say. 
+
+- More reasonable to want a probabilistic upper bound for $R(X)$. 
+
+:::
+
+
+. . .
+
+2. We know averages across realizations. But this is asking about a single realization. We could only be confident in relating the two if we knew about *concentration*. 
+
+
+::: {.incremental}
+
+- How much of the distribution of FDP is concentrated around the mean? 
+
+
+- The variance of FDP also gives us some information about concentration.
+
+:::
+
+::: {.notes} 
+- Lots of literature about probabilistically bounding $R(X)$; if you're interested, you might be abke to pick an ISSI talk about it!
+- exceedance probabilitiy: find value gamma such that prob that $R(X)$ is less than gamma is controlled
+- Some papers about formulas for variance of FDP (e.g. art owen 2005); doesn't seem to have caught on. 
+::: 
+
+
+
+# Comparing FDR to FWER 
+
+$$ \text{FDR} = \mathbb{E}_{F_X} \left [\frac{\text{FD}(X)}{\max \{1, R(X)\}} \right ], ~~~~~ \text{FWER} = \mathbb{P}_{F_X} [ \text{FD}(X) \geq 1 ].$$ 
+
+::: {.incremental}
+
+- Intuitively, the FDR is more adaptive to non-null:null ratio and number of tests 
+
+- For FDR, adding discoveries (rejecting true non-nulls) increases the denominator, allowing us to increase the numerator; logic holds no matter how many tests 
+
+- But for FWER, only ever allowed to reject one true null, no matter how many non-nulls and no matter how many tests
+
+- Formally, FWER is always larger than the FDR, with equality when all tested hypotheses are null (Homework) 
+
+:::
+
+# Your turn: interpretation redux
+
+Imagine you are working with a genome scientist to analyze their microarray data. You apply a procedure that controls FDR at level $10\%$ to their data set, and reject 100 null hypotheses. Your collaborator says:
+
+> "I've decided to focus on just the 10 genes in that rejection list that have the smallest unadjusted p-values. What can we say about those 10 genes? "
+
+What is your answer?
+
+. . .
+
+What if instead they said:
+
+> "I've decided to focus on just the 10 genes in that rejection list that are in a particular biological pathway. What can we say about those 10 genes?"
+
+What is your answer?
+
+# No subset property, FDR 
+
+We know that the following quantity is below 0.1: 
+$$ \text{FDR} = \mathbb{E}_{F_X} \left [\frac{\text{FD}(X)}{\max \{1, R(X)\}} \right ].$$ 
+
+. . .
+
+Your collaborator is tempted to think about the FDR among the 10 smallest: 
+
+$$\mathbb{E}_{F_X} \left [\frac{\# \{ \text{genes that are among 10 smallest, are rejected in }X\text{, and are null}\} }{\max \{1, \# \{\text{genes that are among 10 smallest and were rejected in } X \}} \right ]$$ 
+
+. . .
+
+But the numerator and the denominator have both changed, making it impossible to argue that one of them is always smaller than the other! 
+
+. . .
+
+While the "biological pathway" version might feel intuitively more likely to be true, the logic above holds even when the subset of interest is fixed. 
+
+::: {.notes} 
+- (the subset of interesting genes are not chosen based on the data)
+::: 
+
+# Subset property, FWER 
+
+By contrast, $\text{FWER} = \mathbb{P}_{F_X} [ \text{FD}(X) \geq 1 ]$ **does** have the subset property. 
+
+. . .
+
+Consider: 
+
+- the number of false discoveries based on $X$ within all $M$ genes
+- the number of false discoveries based on $X$ within a subset of genes 
+
+The former is ALWAYS larger! 
+
+<br> 
+
+. . .
+
+That means that if there is $\geq 1$ false discovery based on $X$ within a subset of genes, then there is $\geq 1$ false discovery based on $X$ within all $M$ genes. So 
+
+$$\text{FWER on subset} \leq \text{FWER on all}.$$ 
+
+. . .
+
+This logic holds even if the gene subset is selected using the data; this has implications for selective inference (next two weeks!)
+
+# Do we need to adjust?
+
+Let $X \sim F_X$ represent the data with which we test $H_{0j}: T_j(F_X) = 0$ for all $j = 1, 2, \ldots, M$. 
+
+. . .
+
+<br> 
+
+The naive, unadjusted idea for screening here is: 
+
+- Test $H_{0j}$ for all $j = 1, 2, \ldots, M$. 
+- Reject all genes with p-value $\leq \alpha$. 
+
+. . .
+
+<br> 
+
+This will not control the FDR. We know this for sure because: 
+
+::: {.incremental}
+
+- FWER = FDR when all tested hypotheses are null
+- We established last week conditions where the naive approach does not control FWER.
+
+:::
+
+. . .
+
+(Not a very satisfying answer; we will get a more satisfying one on Thursday!)
+
+# How to control FDR? 
+
+We already know some ways, because FWER is always bigger than FDR. That means that any FWER controlling procedure controls FDR. 
+
+. . .
+
+But doing so would be unnecessarily conservative.
+
+. . .
+
+We will focus on the landmark paper and method: Benjamini and Hochberg (1995). 
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("fdr.png")
 ```
 
-Part of a cDNA microarray chip, from Johanna Hardin (2005) "Microarray Data from a Statistician's Point of View"
+
+::: {.incremental} 
+- Showed that a procedure (independently developed by Eklund and Simes) controls the FDR. 
+
+- This procedure is now commonly called the "Benjamini-Hochberg", or BH procedure. 
 :::
 
-::: {.column width="50%"}
--   One gene in each spot
--   Intensity represents activity level of that gene
--   Red = Cell sample 1 has higher activity
--   Green = Cell sample 2 has higher activity
--   Yellow = Cell sample 1 and 2 have similar activity
--   Black = no activity in either cell sample
-:::
+::: {.notes} 
+- One of the most cited papers in statistics!
 :::
 
-# Microarray data
+# BH procedure 
 
-::: columns
-::: {.column width="50%"}
-```{r, echo = FALSE, fig.align='center', out.width="70%"}
-knitr::include_graphics("img/microarray-data.png")
+**The idea**: Order p-values $p_{(1)} \leq \ldots \leq p_{(M)}$: 
+
+::: {.incremental} 
+- If $p_{(M)} \leq \alpha$, then reject $H_{01}, \ldots, H_{0M}$ and stop; otherwise keep going 
+
+- If $p_{(M-1)} \leq \alpha \left ( \frac{m-1}{m} \right )$, then reject $H_{01}$, ... $H_{0(M-1)}$ and stop; otherwise keep going  
+
+- Keep going until you run out of p-values 
+
+::: 
+
+. . .
+
+Corresponds to the following rule: $$\text{Reject}(p_1, \ldots, p_M) = \left \{ j: p_j \leq \max \{p_{(j)}: p_{(j)} \leq \frac{\alpha j}{m}  \right \}.$$
+
+
+
+# Comparing rejection boundaries
+
+```{r, echo=FALSE, fig.align="center"}
+library(scales)
+library(tidyr)
+library(ggplot2)
+
+thresholds <- data.frame(index=1:100)
+thresholds$hochberg <- 0.1/(100 - thresholds$index+1)
+thresholds$bh <- 0.1*thresholds$index/100
+
+thresholds <- thresholds %>% pivot_longer(cols = c(hochberg, bh), names_to = "Method")
+
+ggplot(thresholds, aes(x = index,y = value, group=Method)) + 
+	geom_line(aes(colour=Method, linetype=Method)) + 
+	theme_bw(base_size = 22) + 
+	ggtitle("Rejection thresholds for ordered p-values") +
+  xlab("Index") + ylab("Threshold") + 
+scale_x_continuous(breaks= pretty_breaks())  
+
 ```
 
-Subset of microarray data from Johanna Hardin (2005) "Microarray Data from a Statistician's Point of View"
-:::
+Here, Hochberg is a variant on Holm that controls FWER under independence; it uses the formula  $\text{Reject}(p_1, \ldots, p_M) = \left \{ j : p_j \leq \max \{p_{(j)}: p_{(j)} \leq \alpha/(M+1 - j)\} \right \}$.  
 
-::: {.column width="50%"}
--   Treatment = older yeast cells (dyed red)
--   Control = younger yeast cells (dyed green)
--   We care about **multiplicative** differences in expected gene activity levels per condition =\> log-scale analysis
--   Biological replicates
--   I'm confused. Figure this out
-:::
-:::
+::: {.notes} 
 
-# Rough structure of an experiment
+- Each method can be thought of as plotting the 100 p-values, finding the largest that falls below those lines, and rejecting everyting before that 
+- At small indices $j$ (which we probably care about), BH is about $j$ times more liberal than Hochberg
+::: 
 
--   Test for no difference in mean expression levels between treatment and control for every gene
--   Note: 10s or 100,000s genes!
--   After testing, very common to follow up on genes claimed to be "differentially expressed"
--   Eg. follow-up = separate "validation experiments" (often laboratory based, costs time and money)
+# BH intuition 
 
-**This framework is frequently applied to data from newer technologies too** - e.g. next-gen sequencing, single-cell sequencing etc.
+Why does BH work? To get some intuition, we'll set down a simple model and notation. 
 
-# Comparing to clinical trials
+. . .
+
+<br> 
+
+Define $H_{0j}: \mathcal{T}_j(F_X) = 0$ for $j = 1, 2, \ldots, M$, and let $X \sim F_X$ be the data that we use to test. Let $M_0 = |\{j: F_X \in \mathcal{F}_{0j}\}|$. 
+
+. . . 
+
+<br> 
+
+Let $p_j(X) \sim \text{Uniform}(0, 1)$ for all $j$ with $H_{0j}$ true, and $p_j(X) \sim F_p$ for all $j$ with $H_{0j}$ false. 
+
+<br> 
+
+We'll use the notation $\text{FD}(X; t)$ to denote the number of false discoveries if you reject all p-values $\leq t$. 
+
+
+# FDR approximation
+
+For any fixed threshold $t$ and $M$ big:
+
+$$ 
+\begin{align} 
+\text{FDR}_t &= \mathbb{E}_{F_X} \left [\frac{\text{FD}(X; t)}{\max \{1, R(X; t)\}} \right ] \\ 
+&\approx \frac{\mathbb{E}_{F_X} [\text{FD}(X; t)]/M}{\mathbb{E}_{F_X} [R(X; t)]/M} \\ 
+&= \frac{\mathbb{E}_{F_X}  [ \sum_{j: H_{0j} \text{ true}} 1 \{p_j(X) \leq t \}   /m]}{\mathbb{E}_{F_X}  [ \sum_{j=1}^M 1 \{p_j(X) \leq t \}   /M]}\\ 
+&= \frac{M_0 \mathbb{P}(\text{Uniform}(0, 1) \leq t)/M}{\mathbb{E}_{F_X}  [ \sum_{j=1}^M 1 \{p_j(X) \leq t \}   /M]} = \frac{(M_0/M)t}{\mathbb{E}_{F_X}  [ \sum_{j=1}^M 1 \{p_j(X) \leq t \}   /M ]}
+\end{align} 
+$$ 
+
+::: {.notes} 
+- First step: figure with $M$ big, we can forget about there being 0 discoveries 
+- Approximate expectation of ratio with ratio of expectation 
+- Seond step: definition 
+- Third & fourth: uniformity of p-values 
+::: 
+
+# Estimating FDR 
+
+$$FDR_t \approx \frac{(M_0/M)t}{\mathbb{E}_{F_X}  [ \sum_{j=1}^M 1 \{p_j(X) \leq t \}  /M ]}$$ 
+
+We don't know what $M_0/M$ is, but we can conservatively estimate it by 1. 
+
+. . .
+
+We don't know what $\mathbb{E}_{F_X}  [ \sum_{j=1}^M 1 \{p_j(X) \leq t \}  /M ]$ is, but given a realization $x$ from $X \sim F_X$, we can estimate it with the empirical equivalent. Leads to: 
+
+$$\hat{FDR}_t(x) = \frac{t}{\sum_{j=1}^M 1 \{p_j(x) \leq t \}/M}.$$ 
+
+. . .
+
+Assuming that there are no ties in p-values, and plugging in $p_{(j)}(x)$ to RHS yields $\frac{p_{(j)}}{j/m}$.
+
+::: {.notes} 
+
+- generally speaking there won't be ties with probabilty 1 if test statistic is continuous under the null and the alternative 
+
+::: 
+
+# Reinterpretation of BH 
+
+Recall that BH says to reject every hypothesis with a p-value no larger than $p_{(\hat j)}$, where   
+$$ \hat j = \max \left \{j: p_{(j)} \leq \frac{\alpha j}{M} \right \}.$$ 
+
+. . .
+
+Rearranging terms, no larger than 
+$$ \hat j = \max \left \{j: \frac{p_{(j)}}{j/m} \leq \alpha \right \}$$ 
+
+. . .
+
+Recall that $\frac{p_{(j)}}{j/m}$ is an estimate of the FDR if we reject at $p_{(j)}$! 
+
+### BH procedure picks the biggest rejection threshold that yields an estimated FDR below targer $\alpha$. 
+
+# Empirical Bayes interpretation 
+
+Do you like Bayesian measures of uncertainty? Augment our simple model with a prior: 
+
+$$ 1\{ H_{0j} \text{ false}\} \overset{iid}{\sim} \text{Bernoulli}(\pi_0)$$ 
+
+. . . 
+
+Then for any threshold $t$, can derive the  "Bayesian FDR":  
+$$\mathbb{P}(H_{0j} \text{ true} \mid p_j(x) \leq t) = \frac{t\pi_0}{\mathbb{P}(p_j(X) \leq t)}. $$
+An empirical Bayesian then estimates with frequentist principles to get: 
+$$\mathbb{P}(H_{0j} \text{ true} \mid p_j(x) \leq t) \approx \frac{t}{\sum_{j'=1}^M 1 \{p_{j'}(x) \leq t \}/M}. $$ 
+
+::: {.notes} 
+- Just Bayes rule 
+- "If we report a null as false, then what's the chance that it's a false discovery?" 
+::: 
+
+# Empirical Bayes interpretation 
+
+$$\mathbb{P}(H_{0j} \text{ true} \mid p_j(x) \leq t) \approx \frac{t}{\sum_{j=1}^M 1 \{p_j(x) \leq t \}/M}. $$ 
+This is our frequentist estimate of the approximation to $FDR_t$ from earlier! 
+
+. . . 
+
+<br> 
+
+So another interpretation is that BH takes the largest threshold so that the estimated Bayesian FDR is $\leq \alpha$. 
+
+. . .
+
+<br> 
+
+If we buy into Bayesian notions of probability, can even say rejected cases "have estimated probability of being null lower than $\alpha$". 
+
+. . .
+
+
+
+
+# BH under independence
+
+Benjamini and Hochberg (1995) showed the following result. 
+
+<br> 
+
+Suppose that we test $H_{0j}$ for $j = 1, 2, \ldots, M$ using $X \sim F_X$, and choose which hypotheses to reject by plugging p-values $p_1(X), \ldots, p_M(X)$ into the BH procedure. 
+
+. . . 
+
+<br> 
+Suppose that $p_1(X), \ldots, p_M(X)$ are valid \text{and independent}.
+
+. . .
+
+<br> 
+
+Then, 
+$$\text{FDR}_{BH} = \frac{M_0}{M} \alpha \leq \alpha.$$ 
+
+
+
+# BH under PRDS 
+
+Benjamini and Yekeutili (2001) showed that: 
+
+<br> 
+
+If the joint distribution of the p-values is independent, OR the subset of p-values corresponding to true nulls is ``positive regression dependence on a subset" (PRDS), then 
+$$ \text{FDR}_{BH} = \frac{M_0}{M} \alpha \leq \alpha.$$ 
+
+. . .
+
+PRDS is technical and not so interpretable, but can show it holds for important subcases: e.g. p-values constructed with test statistics where the null distributions are jointly multivariate normal with all off-diagonal covariance matrix entries positive. 
+
+# BH under general dependence 
+
+::: {.incremental} 
+- Benjamini and Yekeutili (2001) also showed it's possible to make a small change to BH procedure to control the FDR under ANY dependence structure
+- `p.adjust(..., method = "BY")` in R
+- But this is typically very very conservative; not often used 
+- In practice, BH is hard to "break": FDR is typically controlled even if PRDS is not satisfied
+- That being said, correlation can still throw a wrench by increasing variability of FDP. (Might see some of this on Thursday ... )
+::: 
+
+
+
+# Adjusted p-values
+
+**The idea**: Convert $p_1, \ldots, p_M$ to $\tilde p_1, \ldots, \tilde p_M$ so that $$\text{Reject}(p_1, \ldots, p_M) = \{j: \tilde p_j \leq \alpha\}$$ 
+
+See e.g. `stats::p.adjust()`. General definition that applies to any rejection procedure. 
+
+
+. . .
+
+### Caution: interpretation issues
+
+::: {.incremental} 
+- Raw p-values have a natural interpretation: "If the null hypothesis were true, then how often would I see such an extreme value of the test statistic, were I to *repeat* the experiment?". 
+
+- Justifies interpretation as "measure of evidence against the null", and justifies thumb rules (< 0.001 = "overwhelming", < 0.01 = "strong", < 0.05 = "moderate")
+
+- Adjusted p-values have no such interpretation; so what can we read into (say) $\tilde p_j = 0.035$? 
+
+- In the case of FDR adjustment methods, q-values provide an interpretable alternative; see [Storey and Tibshirani (2003)](https://www.pnas.org/doi/10.1073/pnas.1530509100) if you're interested in learning more. 
+::: 
+<br> 
+
+::: {.notes} 
+- It currently seems to me that the only role adjusted p-values have to play is making calculation easier for the practicioner - seems not so relevant? 
+- (They are apparently also convenienet to work with in methods development)
+::: 
+
+
+
+# Food for thought  
+
+
+::: {.incremental} 
+- We've really only scratched the surface; this was and is a very active research area! 
+- There are many other proposed error rates: positive FDR, directional FDR
+- There are related research directions: e.g. exceedance probability control 
+- There are many methods for controlling FDR that try to improve on BH, e.g. by estimating the number of truly null hypotheses from the data
+- There are many methods for controlling FDR that look quite different; a particularly popular one in recent years is knockoffs 
+::: 
+
+. . .
+
+### Many options you can pick for your final presentation that can help you learn more! 
+
+
+# Multiple testing wrapup 
+
+**Multiple testing**: Whenever we conduct more than one hypothesis test in a single analysis, and look at the outcome of all of them.
+
+-   Does this cause problems? If so, what are they?
+-   Do we need to adjust for multiple testing?  If so, how should we adjust? 
+
+<br>
+
+. . .
+
+We saw very different answers to these questions within a single class last week, and then once again very different answers this week!
+
+<br> 
+
+. . .
+
+Does that make sense? 
+
+#  A review of the science 
+
+> **"I don't know, it depends on the scientific problem at hand."** - My annoying partner, whenever I ask him ANY question involving statistics.
 
 |                      | Clinical Trials   | Genomics               |
 |----------------------|-------------------|------------------------|
 | Number of tests?     | A few             | Lots                   |
 | Hypothesis selection | Carefully curated | Little to no screening |
-| False positives?     | Absolutely awful  | Can live with a few    |
+| False positives?     | Awful  | Can live with a few    |
 
-**The science is different, so why should we expect the desired inferential properties to be the same?**
 
-# Multiple testing philosophy
+. . . 
 
--   We want to get a moderately sized list of genes that seem like promising candidates for further investigation, and we want it fast and cheap.
+<br> 
 
--   The "cost" of a false positive is that we waste time and money chasing a red herring in validation experiment.
+The science is different, so no wonder the answers are different. 
 
--   **Key idea**: We can probably live with (say) 10% of our resources going to waste in the follow-up phase.
+> **“You better think (think) about what you’re trying to do ..."** - Aretha Franklin, “Think”
 
--   After all, we have already saved a bunch of time and money by not investigating every gene in the full list!
 
-# Contingency table for M tests
-
-Suppose that we test $M$ hypotheses based on $X \sim \mathbb{F}$. 
-
-|       | Null not  rejected | Null rejected | Total |
-|-------|--------------|----------|-------|
-| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
-| Null is false | $M_1 - B$    | $B$      | $M_1$ |
-| Total | $M - R$      | $R$      | $M$   |
-
-Terminology: 
-
-- $M_0$ is the number of true null hypotheses. (Fixed but unknown)
-- $M_1$ is the number of false null hypotheses. (Fixed but unknown)
-- $A$ is the number of false discoveries. (Random variable)
-- $B$ is the number of true discoveries. (Random variable) 
-- $R$ is the number of discoveries. (Random variable)
-
-# FWER and the contingency table 
-
-Suppose that we test $M$ hypotheses based on $X \sim \mathbb{F}$. 
-
-|       | Null not  rejected | Null rejected | Total |
-|-------|--------------|----------|-------|
-| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
-| Null is false | $M_1 - B$    | $B$      | $M_1$ |
-| Total | $M - R$      | $R$      | $M$   |
-
-Family wise error rate: 
-
-$$\text{FWER}(\mathbb{F}) = P_{X \sim \mathbb{F}}(A \geq 1)$$ 
-We are calculating **horizontally**: FWER doesn't about the second row at all.  
-
-# FDP and FDR
-
-Suppose that we test $M$ hypotheses based on $X \sim \mathbb{F}$. 
-
-|       | Null not  rejected | Null rejected | Total |
-|-------|--------------|----------|-------|
-| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
-| Null is false | $M_1 - B$    | $B$      | $M_1$ |
-| Total | $M - R$      | $R$      | $M$   |
-
-Another angle is to calculate **vertically**. Define the (random) **false discovery proportion** as:  
-
-$$\text{FDP} \equiv \begin{cases} A/R &, R > 0 \\ 0 &, R = 0 \end{cases}$$ 
-The **false discovery rate** is 
-$$ \text{FDR}(\mathbb{F}) = \mathbb{E}_{X \sim \mathbb{F}}[\text{FDP}].$$ 
-
-# Back to the science 
-
-**Recall**: "We can probably live with (say) 10% of our resources going to waste." 
-
-Assuming that each discovery costs $C$ resource units, the proportion of our resources going to waste on follow-ups based on $X$ is: 
-$$ AC/RC = A/R = \text{FDP}$$ 
-
-
-And that means that if we were to **repeat** the process of microarray experiment => follow-up investigation, then on average across these repeats, our proportion of waste is ... 
-$$ \mathbb{E}_{X \sim \mathbb{F}}(A/R) = \text{FDR}$$ 
-
-**A reasonable scientific and statistical goal in this context is to control the false discovery rate.** 
-
-# FDR is more liberal than FWER
-
-Controlling FWER implies that we control FDR, but not vice versa, because: 
-$$ \text{FWER} = \mathbb{E}[1\{ A \geq 1\}] \geq \text{FDR} = \mathbb{E}[\text{FDP}],$$ 
-with equality when all null hypotheses are true. Suffices to show inequality always holds for what's inside the expectation.
-
-Two cases: 
-
-1. $A = 0$ (we reject no true null hypotheses). Then $1\{ A \geq 1\} = 0$, and $\text{FDP} = 0$ and so $1\{ A \geq 1\} = \text{FDP}.$
-2. $A \geq 1$ (we reject at least one true null hypothesis). Then, $1\{ A \geq 1\} = 1$. Also, $R \geq A > 0$, so $\text{FDP} = \frac{A}{R} \leq 1$ . Thus, $1\{ A \geq 1\} \geq \text{FDP}$. 
-
-
-Equality is straightforward: if every null hypothesis is true, then every rejection is a false rejection, so FDP = 1 if $A \geq 0$ and $0$ otherwise. 
-
-# "Naive" approach 
-
-Let's say we test each of the $M$ null hypotheses with a "classical" method that returns valid p-values.  What happens to FDR? 
-
-|       | Null not  rejected | Null rejected | Total |
-|-------|--------------|----------|-------|
-| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
-| Null is false | $M_1 - B$    | $B$      | $M_1$ |
-| Total | $M - R$      | $R$      | $M$   |
-
-Assuming that we reject at nominal level $\alpha$, we described assumptions last week that make  FWER $> \alpha$. We also have FDP = FWER when all null hypotheses are true, so when all null hypotheses are true, FDP $> \alpha$. 
-
-- This is not a super satisfying answer for how bad it can get; we will explore this further on Thursday lab
-
-# Benjamini-Hochberg (BH) procedure
-
-
-# Example 
-
-# A picture
-
-# p-value adjustments
-
-# Aside: Empirical Bayes 
-
-
-
-# Relaxing assumptions 
-
-
-# Your turn: interpretation 
-
-Imagine you are working with a genome scientist to analyze their microarray data. You apply the BH procedure at level $10\%$ to their data set, and reject 100 null hypotheses. Your collaborator says: 
-
-> "Oh, so about 10 genes out of that 100 really are differentially expressed?" 
-
-What is your answer? 
-
-# FDP Variability
-
-> "We have focused a lot of discussion up to this point on the mean. But what about the variance?" - Jim Zidek, paraphrased
-
-- Your collaborator is asking a question that cannot be answered without knowing the **variability** of the FDP. 
-
-- **FDR control says absolutely nothing about** $\text{Var}[FDP]$
-
-- In fact, FDP can be quite variable across repeated experiments, especially if the p-values from each test are dependent. 
-
-- We may explore this further in Thursday lab; you may also learn more about this if you select the right talk for your final presentation
-
-# Another puzzle 
-
-Imagine you are working with a genome scientist to analyze their microarray data. You apply the BH procedure at level $10\%$ to their data set, and reject 100 null hypotheses. Your collaborator says: 
-
-> "I've decided to focus on just the 10 genes in that rejection list that have the smallest unadjusted p-values. What can we say about those 10 genes? " 
-
-What is your answer? 
-
-What if instead they said: 
-
-> "I've decided to focus on just the 10 genes in that rejection list that are in a particular biological pathway. What can we say about those 10 genes?" 
-
-What is your answer? 
-
-
-# No subset property 
-
-
-Contrast this to FWER: easy to show that FWER control on all $M$ hypotheses implies FWER control on the hypotheses in $\{1, 2, \ldots, M\} \cap \mathcal{I}$ for any subset $\mathcal{I}$. (More on this in selective inference - next week!)
-
-# Interpretation of "adjusted p-values" 
-
-# FDR or something else? 
-
-Many variants: 
-
-
-
-# BH or something else? 
-
-Knockoffs
-
-# Opportunities for statisticians 
-
-# Next class 
-
-**Computer lab**: 
-
-
-Bring a CHARGED laptop!! 
+::: {.notes} 
+- One hypothesis per measured endpoint/outcome.
+-   Last stage before the treatment goes on market
+-   Results inform market labelling
+-   Treatments go through a very extensive screening process before reaching Phase III
+-   Endpoints are very carefully chosen based on clinical considerations
+-   Federal agency involving medical considerations: ENORMOUS potential for political fallout
+::: 
 
