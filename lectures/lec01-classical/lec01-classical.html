@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="lec-01-classical_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lec-01-classical_files/libs/quarto-html/tabby.min.js"></script>
+<script src="lec-01-classical_files/libs/quarto-html/popper.min.js"></script>
+<script src="lec-01-classical_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="lec-01-classical_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lec-01-classical_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="lec-01-classical_files/libs/quarto-html/quarto-html.min.css" rel="stylesheet" data-mode="light">
+<link href="lec-01-classical_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.3.433">
+
+  <meta name="author" content="Lucy Gao">
+  <meta name="dcterms.date" content="2024-01-09">
+  <title>Classical Inference</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="lec-01-classical_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="lec-01-classical_files/libs/revealjs/dist/reveal.css">
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+  </style>
+  <link rel="stylesheet" href="lec-01-classical_files/libs/revealjs/dist/theme/quarto.css">
+  <link href="lec-01-classical_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="lec-01-classical_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="lec-01-classical_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="lec-01-classical_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="lec-01-classical_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="lec-01-classical_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+
+  .callout {
+    margin-top: 1em;
+    margin-bottom: 1em;  
+    border-radius: .25rem;
+  }
+
+  .callout.callout-style-simple { 
+    padding: 0em 0.5em;
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+    display: flex;
+  }
+
+  .callout.callout-style-default {
+    border-left: solid #acacac .3rem;
+    border-right: solid 1px silver;
+    border-top: solid 1px silver;
+    border-bottom: solid 1px silver;
+  }
+
+  .callout .callout-body-container {
+    flex-grow: 1;
+  }
+
+  .callout.callout-style-simple .callout-body {
+    font-size: 1rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-style-default .callout-body {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .callout.callout-titled.callout-style-simple .callout-body {
+    margin-top: 0.2em;
+  }
+
+  .callout:not(.callout-titled) .callout-body {
+      display: flex;
+  }
+
+  .callout:not(.no-icon).callout-titled.callout-style-simple .callout-content {
+    padding-left: 1.6em;
+  }
+
+  .callout.callout-titled .callout-header {
+    padding-top: 0.2em;
+    margin-bottom: -0.2em;
+  }
+
+  .callout.callout-titled .callout-title  p {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+    
+  .callout.callout-titled.callout-style-simple .callout-content  p {
+    margin-top: 0;
+  }
+
+  .callout.callout-titled.callout-style-default .callout-content  p {
+    margin-top: 0.7em;
+  }
+
+  .callout.callout-style-simple div.callout-title {
+    border-bottom: none;
+    font-size: .9rem;
+    font-weight: 600;
+    opacity: 75%;
+  }
+
+  .callout.callout-style-default  div.callout-title {
+    border-bottom: none;
+    font-weight: 600;
+    opacity: 85%;
+    font-size: 0.9rem;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-default div.callout-content {
+    padding-left: 0.5em;
+    padding-right: 0.5em;
+  }
+
+  .callout.callout-style-simple .callout-icon::before {
+    height: 1rem;
+    width: 1rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 1rem 1rem;
+  }
+
+  .callout.callout-style-default .callout-icon::before {
+    height: 0.9rem;
+    width: 0.9rem;
+    display: inline-block;
+    content: "";
+    background-repeat: no-repeat;
+    background-size: 0.9rem 0.9rem;
+  }
+
+  .callout-title {
+    display: flex
+  }
+    
+  .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  .callout.no-icon::before {
+    display: none !important;
+  }
+
+  .callout.callout-titled .callout-body > .callout-content > :last-child {
+    margin-bottom: 0.5rem;
+  }
+
+  .callout.callout-titled .callout-icon::before {
+    margin-top: .5rem;
+    padding-right: .5rem;
+  }
+
+  .callout:not(.callout-titled) .callout-icon::before {
+    margin-top: 1rem;
+    padding-right: .5rem;
+  }
+
+  /* Callout Types */
+
+  div.callout-note {
+    border-left-color: #4582ec !important;
+  }
+
+  div.callout-note .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEU0lEQVRYCcVXTWhcVRQ+586kSUMMxkyaElstCto2SIhitS5Ek8xUKV2poatCcVHtUlFQk8mbaaziwpWgglJwVaquitBOfhQXFlqlzSJpFSpIYyXNjBNiTCck7x2/8/LeNDOZxDuEkgOXe++553zfefee+/OYLOXFk3+1LLrRdiO81yNqZ6K9cG0P3MeFaMIQjXssE8Z1JzLO9ls20MBZX7oG8w9GxB0goaPrW5aNMp1yOZIa7Wv6o2ykpLtmAPs/vrG14Z+6d4jpbSKuhdcSyq9wGMPXjonwmESXrriLzFGOdDBLB8Y6MNYBu0dRokSygMA/mrun8MGFN3behm6VVAwg4WR3i6FvYK1T7MHo9BK7ydH+1uurECoouk5MPRyVSBrBHMYwVobG2aOXM07sWrn5qgB60rc6mcwIDJtQrnrEr44kmy+UO9r0u9O5/YbkS9juQckLed3DyW2XV/qWBBB3ptvI8EUY3I9p/67OW+g967TNr3Sotn3IuVlfMLVnsBwH4fsnebJvyGm5GeIUA3jljERmrv49SizPYuq+z7c2H/jlGC+Ghhupn/hcapqmcudB9jwJ/3jvnvu6vu5lVzF1fXyZuZZ7U8nRmVzytvT+H3kilYvH09mLWrQdwFSsFEsxFVs5fK7A0g8gMZjbif4ACpKbjv7gNGaD8bUrlk8x+KRflttr22JEMRUbTUwwDQScyzPgedQHZT0xnx7ujw2jfVfExwYHwOsDTjLdJ2ebmeQIlJ7neo41s/DrsL3kl+W2lWvAga0tR3zueGr6GL78M3ifH0rGXrBC2aAR8uYcIA5gwV8zIE8onoh8u0Fca/ciF7j1uOzEnqcIm59sEXoGc0+z6+H45V1CvAvHcD7THztu669cnp+L0okAeIc6zjbM/24LgGM1gZk7jnRu1aQWoU9sfUOuhrmtaPIO3YY1KLLWZaEO5TKUbMY5zx8W9UJ6elpLwKXbsaZ4EFl7B4bMtDv0iRipKoDQT2sNQI9b1utXFdYisi+wzZ/ri/1m7QfDgEuvgUUEIJPq3DhX/5DWNqIXDOweC2wvIR90Oq3lDpdMIgD2r0dXvGdsEW5H6x6HLRJYU7C69VefO1x8Gde1ZFSJLfWS1jbCnhtOPxmpfv2LXOA2Xk2tvnwKKPFuZ/oRmwBwqRQDcKNeVQkYcOjtWVBuM/JuYw5b6isojIkYxyYAFn5K7ZBF10fea52y8QltAg6jnMqNHFBmGkQ1j+U43HMi2xMar1Nv0zGsf1s8nUsmUtPOOrbFIR8bHFDMB5zL13Gmr/kGlCkUzedTzzmzsaJXhYawnA3UmARpiYj5ooJZiUoxFRtK3X6pgNPv+IZVPcnwbOl6f+aBaO1CNvPW9n9LmCp01nuSaTRF2YxHqZ8DYQT6WsXT+RD6eUztwYLZ8rM+rcPxamv1VQzFUkzFXvkiVrySGQgJNvXHJAxiU3/NwiC03rSf05VBaPtu/Z7/B8Yn/w7eguloAAAAAElFTkSuQmCC');
+  }
+
+  div.callout-note.callout-style-default .callout-title {
+    background-color: #dae6fb
+  }
+
+  div.callout-important {
+    border-left-color: #d9534f !important;
+  }
+
+  div.callout-important .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAEKklEQVRYCcVXTWhcVRS+575MJym48A+hSRFr00ySRQhURRfd2HYjk2SSTokuBCkU2o0LoSKKraKIBTcuFCoidGFD08nkBzdREbpQ1EDNIv8qSGMFUboImMSZd4/f9zJv8ibJMC8xJQfO3HPPPef7zrvvvnvviIkpC9nsw0UttFunbUhpFzFtarSd6WJkStVMw5xyVqYTvkwfzuf/5FgtkVoB0729j1rjXwThS7Vio+Mo6DNnvLfahoZ+i/o32lULuJ3NNiz7q6+pyAUkJaFF6JwaM2lUJlV0MlnQn5aTRbEu0SEqHUa0A4AdiGuB1kFXRfVyg5d87+Dg4DL6m2TLAub60ilj7A1Ec4odSAc8X95sHh7+ZRPCFo6Fnp7HfU/fBng/hi10CjCnWnJjsxvDNxWw0NfV6Rv5GgP3I3jGWXumdTD/3cbEOP2ZbOZp69yniG3FQ9z1jD7bnBu9Fc2tKGC2q+uAJOQHBDRiZX1x36o7fWBs7J9ownbtO+n0/qWkvW7UPIfc37WgT6ZGR++EOJyeQDSb9UB+DZ1G6DdLDzyS+b/kBCYGsYgJbSQHuThGKRcw5xdeQf8YdNHsc6ePXrlSYMBuSIAFTGAtQo+VuALo4BX83N190NWZWbynBjhOHsmNfFWLeL6v+ynsA58zDvvAC8j5PkbOcXCMg2PZFk3q8MjI7WAG/Dp9AwP7jdGBOOQkAvlFUB+irtm16I1Zw9YBcpGTGXYmk3kQIC/Cds55l+iMI3jqhjAuaoe+am2Jw5GT3Nbz3CkE12NavmzN5+erJW7046n/CH1RO/RVa8lBLozXk9uqykkGAyRXLWlLv5jyp4RFsG5vGVzpDLnIjTWgnRy2Rr+tDKvRc7Y8AyZq10jj8DqXdnIRNtFZb+t/ZRtXcDiVnzpqx8mPcDWxgARUqx0W1QB9MeUZiNrV4qP+Ehc+BpNgATsTX8ozYKL2NtFYAHc84fG7ndxUPr+AR/iQSns7uSUufAymwDOb2+NjK27lEFocm/EE2WpyIy/Hi66MWuMKJn8RvxIcj87IM5Vh9663ziW36kR0HNenXuxmfaD8JC7tfKbrhFr7LiZCrMjrzTeGx+PmkosrkNzW94ObzwocJ7A1HokLolY+AvkTiD/q1H0cN48c5EL8Crkttsa/AXQVDmutfyku0E7jShx49XqV3MFK8IryDhYVbj7Sj2P2eBxwcXoe8T8idsKKPRcnZw1b+slFTubwUwhktrfnAt7J++jwQtLZcm3sr9LQrjRzz6cfMv9aLvgmnAGvpoaGLxM4mAEaLV7iAzQ3oU0IvD5x9ix3yF2RAAuYAOO2f7PEFWCXZ4C9Pb2UsgDeVnFSpbFK7/IWu7TPTvBqzbGdCHOJQSxiEjt6IyZmxQyEJHv6xyQsYk//moVFsN2zP6fRImjfq7/n/wFDguUQFNEwugAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-important.callout-style-default .callout-title {
+    background-color: #f7dddc
+  }
+
+  div.callout-warning {
+    border-left-color: #f0ad4e !important;
+  }
+
+  div.callout-warning .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAAETklEQVRYCeVWW2gcVRg+58yaTUnizqbipZeX4uWhBEniBaoUX1Ioze52t7sRq6APio9V9MEaoWlVsFasRq0gltaAPuxms8lu0gcviE/FFOstVbSIxgcv6SU7EZqmdc7v9+9mJtNks51NTUH84ed889/PP+cmxP+d5FIbMJmNbpREu4WUkiTtCicKny0l1pIKmBzovF2S+hIJHX8iEu3hZJ5lNZGqyRrGSIQpq15AzF28jgpeY6yk6GVdrfFqdrD6Iw+QlB8g0YS2g7dyQmXM/IDhBhT0UCiRf59lfqmmDvzRt6kByV/m4JjtzuaujMUM2c5Z2d6JdKrRb3K2q6mA+oYVz8JnDdKPmmNthzkAk/lN63sYPgevrguc72aZX/L9C6x09GYyxBgCX4NlvyGUHOKELlm5rXeR1kchuChJt4SSwyddZRXgvwMGvYo4QSlk3/zkHD8UHxwVJA6zjZZqP8v8kK8OWLnIZtLyCAJagYC4rTGW/9Pqj92N/c+LUaAj27movwbi19tk/whRCIE7Q9vyI6yvRpftAKVTdUjOW40X3h5OXsKCdmFcx0xlLJoSuQngnrJe7Kcjm4OMq9FlC7CMmScQANuNvjfP3PjGXDBaUQmbp296S5L4DrpbrHN1T87ZVEZVCzg1FF0Ft+dKrlLukI+/c9ENo+TvlTDbYFvuKPtQ9+l052rXrgKoWkDAFnvh0wTOmYn8R5f4k/jN/fZiCM1tQx9jQQ4ANhqG4hiL0qIFTGViG9DKB7GYzgubnpofgYRwO+DFjh0Zin2m4b/97EDkXkc+f6xYAPX0KK2I/7fUQuwzuwo/L3AkcjugPNixC8cHf0FyPjWlItmLxWw4Ou9YsQCr5fijMGoD/zpdRy95HRysyXA74MWOnscpO4j2y3HAVisw85hX5+AFBRSHt4ShfLFkIMXTqyKFc46xdzQM6XbAi702a7sy04J0+feReMFKp5q9esYLCqAZYw/k14E/xcLLsFElaornTuJB0svMuJINy8xkIYuL+xPAlWRceH6+HX7THJ0djLUom46zREu7tTkxwmf/FdOZ/sh6Q8qvEAiHpm4PJ4a/doJe0gH1t+aHRgCzOvBvJedEK5OFE5jpm4AGP2a8Dxe3gGJ/pAutug9Gp6he92CsSsWBaEcxGx0FHytmIpuqGkOpldqNYQK8cSoXvd+xLxXADw0kf6UkJNFtdo5MOgaLjiQOQHcn+A6h5NuL2s0qsC2LOM75PcF3yr5STuBSAcGG+meA14K/CI21HcS4LBT6tv0QAh8Dr5l93AhZzG5ZJ4VxAqdZUEl9z7WJ4aN+svMvwHHL21UKTd1mqvChH7/Za5xzXBBKrUcB0TQ+Ulgkfbi/H/YT5EptrGzsEK7tR1B7ln9BBwckYfMiuSqklSznIuoIIOM42MQO+QnduCoFCI0bpkzjCjddHPN/F+2Yu+sd9bKNpVwHhbS3LluK/0zgfwD0xYI5dXuzlQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-warning.callout-style-default .callout-title {
+    background-color: #fcefdc
+  }
+
+  div.callout-tip {
+    border-left-color: #02b875 !important;
+  }
+
+  div.callout-tip .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAADr0lEQVRYCe1XTWgTQRj9ZjZV8a9SPIkKgj8I1bMHsUWrqYLVg4Ue6v9BwZOxSYsIerFao7UiUryIqJcqgtpimhbBXoSCVxUFe9CTiogUrUp2Pt+3aUI2u5vdNh4dmMzOzHvvezuz8xNFM0mjnbXaNu1MvFWRXkXEyE6aYOYJpdW4IXuA4r0fo8qqSMDBU0v1HJUgVieAXxzCsdE/YJTdFcVIZQNMyhruOMJKXYFoLfIfIvVIMWdsrd+Rpd86ZmyzzjJmLStqRn0v8lzkb4rVIXvnpScOJuAn2ACC65FkPzEdEy4TPWRLJ2h7z4cArXzzaOdKlbOvKKX25Wl00jSnrwVxAg3o4dRxhO13RBSdNvH0xSARv3adTXbBdTf64IWO2vH0LT+cv4GR1DJt+DUItaQogeBX/chhbTBxEiZ6gftlDNXTrvT7co4ub5A6gp9HIcHvzTa46OS5fBeP87Qm0fQkr4FsYgVQ7Qg+ZayaDg9jhg1GkWj8RG6lkeSacrrHgDaxdoBiZPg+NXV/KifMuB6//JmYH4CntVEHy/keA6x4h4CU5oFy8GzrBS18cLJMXcljAKB6INjWsRcuZBWVaS3GDrqB7rdapVIeA+isQ57Eev9eCqzqOa81CY05VLd6SamW2wA2H3SiTbnbSxmzfp7WtKZkqy4mdyAlGx7ennghYf8voqp9cLSgKdqNfa6RdRsAAkPwRuJZNbpByn+RrJi1RXTwdi8RQF6ymDwGMAtZ6TVE+4uoKh+MYkcLsT0Hk8eAienbiGdjJHZTpmNjlbFJNKDVAp2fJlYju6IreQxQ08UJDNYdoLSl6AadO+fFuCQqVMB1NJwPm69T04Wv5WhfcWyfXQB+wXRs1pt+nCknRa0LVzSA/2B+a9+zQJadb7IyyV24YAxKp2Jqs3emZTuNnKxsah+uabKbMk7CbTgJx/zIgQYErIeTKRQ9yD9wxVof5YolPHqaWo7TD6tJlh7jQnK5z2n3+fGdggIOx2kaa2YI9QWarc5Ce1ipNWMKeSG4DysFF52KBmTNMmn5HqCFkwy34rDg05gDwgH3bBi+sgFhN/e8QvRn8kbamCOhgrZ9GJhFDgfcMHzFb6BAtjKpFhzTjwv1KCVuxHvCbsSiEz4CANnj84cwHdFXAbAOJ4LTSAawGWFn5tDhLMYz6nWeU2wJfIhmIJBefcd/A5FWQWGgrWzyORZ3Q6HuV+Jf0Bj+BTX69fm1zWgK7By1YTXchFDORywnfQ7GpzOo6S+qECrsx2ifVQAAAABJRU5ErkJggg==');
+  }
+
+  div.callout-tip.callout-style-default .callout-title {
+    background-color: #ccf1e3
+  }
+
+  div.callout-caution {
+    border-left-color: #fd7e14 !important;
+  }
+
+  div.callout-caution .callout-icon::before {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAERlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAA6ABAAMAAAABAAEAAKACAAQAAAABAAAAIKADAAQAAAABAAAAIAAAAACshmLzAAACV0lEQVRYCdVWzWoUQRCuqp2ICBLJXgITZL1EfQDBW/bkzUMUD7klD+ATSHBEfAIfQO+iXsWDxJsHL96EHAwhgzlkg8nBg25XWb0zIb0zs9muYYWkoKeru+vn664fBqElyZNuyh167NXJ8Ut8McjbmEraKHkd7uAnAFku+VWdb3reSmRV8PKSLfZ0Gjn3a6Xlcq9YGb6tADjn+lUfTXtVmaZ1KwBIvFI11rRXlWlatwIAAv2asaa9mlB9wwygiDX26qaw1yYPzFXg2N1GgG0FMF8Oj+VIx7E/03lHx8UhvYyNZLN7BwSPgekXXLribw7w5/c8EF+DBK5idvDVYtEEwMeYefjjLAdEyQ3M9nfOkgnPTEkYU+sxMq0BxNR6jExrAI31H1rzvLEfRIdgcv1XEdj6QTQAS2wtstEALLG1yEZ3QhH6oDX7ExBSFEkFINXH98NTrme5IOaaA7kIfiu2L8A3qhH9zRbukdCqdsA98TdElyeMe5BI8Rs2xHRIsoTSSVFfCFCWGPn9XHb4cdobRIWABNf0add9jakDjQJpJ1bTXOJXnnRXHRf+dNL1ZV1MBRCXhMbaHqGI1JkKIL7+i8uffuP6wVQAzO7+qVEbF6NbS0LJureYcWXUUhH66nLR5rYmva+2tjRFtojkM2aD76HEGAD3tPtKM309FJg5j/K682ywcWJ3PASCcycH/22u+Bh7Aa0ehM2Fu4z0SAE81HF9RkB21c5bEn4Dzw+/qNOyXr3DCTQDMBOdhi4nAgiFDGCinIa2owCEChUwD8qzd03PG+qdW/4fDzjUMcE1ZpIAAAAASUVORK5CYII=');
+  }
+
+  div.callout-caution.callout-style-default .callout-title {
+    background-color: #ffe5d0
+  }
+
+  </style>
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+</head>
+<body class="quarto-light">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Classical Inference</h1>
+  <p class="subtitle">(Lecture)</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Lucy Gao 
+</div>
+</div>
+</div>
+
+  <p class="date">January 9, 2024</p>
+</section>
+<section id="about-me" class="slide level1">
+<h1>About me</h1>
+<div class="columns">
+<div class="column" style="width:60%;">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="img/me.jpeg"></p>
+</figure>
+</div>
+</div>
+</div>
+</div><div class="column" style="width:40%;">
+<ul>
+<li><p>Lucy L. Gao</p></li>
+<li><p><a href="lucy.gao@stat.ubc.ca">lucy.gao@stat.ubc.ca</a></p></li>
+<li><p><a href="https://www.lucylgao.com/">https://www.lucylgao.com/</a></p></li>
+<li><p>Assistant Professor, Department of Statistics</p></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="course-at-a-glance" class="slide level1">
+<h1>Course at a glance</h1>
+<table>
+<colgroup>
+<col style="width: 26%">
+<col style="width: 22%">
+<col style="width: 51%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>Contribution</th>
+<th>Timing</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Homework</td>
+<td>40%</td>
+<td>Week 3, Week 5</td>
+</tr>
+<tr class="even">
+<td>In-class Lab</td>
+<td>20%</td>
+<td>Week 1, Week 2, Week 3, Week 4</td>
+</tr>
+<tr class="odd">
+<td>In-class Presentation</td>
+<td>40%</td>
+<td>Week 6</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<div class="fragment">
+<ul>
+<li>Attendance and participation are important</li>
+<li>… But flexibility built in for special circumstances</li>
+<li>Assessment grades mostly based on effort</li>
+</ul>
+</div>
+</section>
+<section id="my-approach-to-this-class" class="slide level1">
+<h1>My approach to this class</h1>
+<h2 id="pre-requisites">Pre-requisites</h2>
+<ul>
+<li>Comfortable with frequentist inference at “Casella-Berger” level</li>
+<li>Comfortable with coding, ideally in R</li>
+</ul>
+<p><br></p>
+<h2 id="treatment-of-content">Treatment of content</h2>
+<ul>
+<li><p>Problem forward, not solutions backwards</p></li>
+<li><p>Rigor/Theory Level: Moderate</p></li>
+<li><p>Breadth/depth of methods coverage: Low</p></li>
+</ul>
+<aside class="notes">
+<ul>
+<li>We care about scientific problems - they motivate goals for statistical methods to target</li>
+<li>We care a lot about making statistically precise statements and fully understanding them, but only a little about understanding/writing proofs</li>
+<li>We will talk about one or two methods per scientific problem, and we won’t talk about every detail of those methods</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="disclaimer" class="slide level1">
+<h1>Disclaimer</h1>
+<p><strong>This is a newly developed course!</strong> Moreover, developed with little to no textbook support.</p>
+<p><br></p>
+<div class="fragment">
+<p>That means:</p>
+<ul>
+<li><p>Lots of parts reflect my current knowledge and opinions: these change over time</p></li>
+<li><p>Lots of experimental notation and presentation</p></li>
+<li><p>Course format and timing is untested!</p></li>
+</ul>
+<p><br></p>
+</div>
+<div class="fragment">
+<p><strong>Bottom line</strong>: Feedback very welcome for next iteration!</p>
+</div>
+</section>
+<section id="statistics-science-and-replicability" class="slide level1">
+<h1>Statistics, science, and replicability</h1>
+<blockquote>
+<p><strong>“Statistics is about science, and science is about proving things to people.”</strong> - Scott S. Emerson, paraphrased</p>
+</blockquote>
+<div class="fragment">
+<p><br></p>
+<p><strong>How do you prove something about the world?</strong></p>
+<ul>
+<li><p>Show it once? <em>Not good enough.</em></p></li>
+<li><p>Show twice? Ideally lots of times? <em>Better.</em></p></li>
+</ul>
+</div>
+<div class="fragment">
+<p><br></p>
+<p><strong>Key idea</strong>: Random variation in experimentation and data collection should be accounted for when weighing the produced evidence.</p>
+<aside class="notes">
+<ul>
+<li>Experiments in physical science (e.g.&nbsp;phenomena related to vacuums)</li>
+<li>Concept goes back to 1600s</li>
+<li>Keystone of good science: think scientific method!</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="frequentist-inference" class="slide level1">
+<h1>Frequentist inference</h1>
+<h3 id="i.e.-hypothesis-tests-and-confidence-intervals">(i.e.&nbsp;Hypothesis tests and confidence intervals)</h3>
+<p><br></p>
+<p><strong>Key Question</strong>: “To what extent does random variation inherent in experimentation affect our ability to draw conclusions?”</p>
+<p><strong>Answer</strong>: Summaries of what happens if we <em>repeat</em>, i.e.&nbsp;collect new data and repeat calculations.</p>
+<p><br></p>
+<p>Illustrations:</p>
+<div>
+<ul>
+<li class="fragment"><p><strong>p-value</strong>: “If the null hypothesis were true, then how often would I see such an extreme value of the test statistic, were I to <em>repeat</em> the experiment?”</p></li>
+<li class="fragment"><p><strong>Coverage</strong>: “If I were to <em>repeat</em> the experiment, how often would I construct a confidence interval that contains the true parameter?”</p></li>
+</ul>
+</div>
+</section>
+<section id="modern-challenges-to-replicability" class="slide level1">
+<h1>Modern challenges to replicability</h1>
+<p>Experiments are now very complicated: lots of data, lots of scientific aims, lots of calculations</p>
+<p><br></p>
+<p>Now common settings:</p>
+<div>
+<ul>
+<li class="fragment"><p><strong>Multiple testing</strong>: Collect data and use it to make inference on more than one (non-data-adaptive!) thing</p></li>
+<li class="fragment"><p><strong>Selective inference</strong>: Collect data, then use it to decide what to make inference on</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p>In these settings:</p>
+<ul>
+<li><p>All ideas related to “collect new data and repeat calculations” get more complicated</p></li>
+<li><p>This complexity is not always taken into account in the statistical analysis</p></li>
+</ul>
+</div>
+</section>
+<section id="agnostic-statistics" class="slide level1">
+<h1>Agnostic statistics</h1>
+<blockquote>
+<p><strong>“Everything should be as simple as possible, but no simpler.”</strong> - Albert Einstein (sort of)</p>
+</blockquote>
+<p><strong>Many textbooks/courses</strong>: We try to make inference about some parameters in a (usually simplified) finite-dimensional model.</p>
+<ul>
+<li>Eg. Use <span class="math inline">\(X \sim N(\mu, \sigma^2)\)</span> to learn about <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma^2\)</span>.</li>
+</ul>
+<div class="fragment">
+<p><strong>Agnostic statistics</strong>: We try to make inference about some summaries of the model (<em>functionals</em>) for the data, and this model could be <em>infinite-dimensional</em>.</p>
+<ul>
+<li>Eg. Use <span class="math inline">\(X \sim F\)</span> to learn about <span class="math inline">\(\mathbb{E}[X]\)</span> and <span class="math inline">\(\text{Var}[X]\)</span>.</li>
+</ul>
+</div>
+<div class="fragment">
+<h3 id="we-will-think-more-agnosticly-in-this-class-because-imo-its-important-to-understanding-selective-inference.">We will think more agnosticly in this class because (IMO) it’s important to understanding selective inference.</h3>
+</div>
+</section>
+<section id="functionals" class="slide level1">
+<h1>Functionals</h1>
+<div>
+<ul>
+<li class="fragment"><p>Let <span class="math inline">\(F\)</span> be a distribution, and <span class="math inline">\(\mathcal{F}\)</span> be a set of distributions.</p></li>
+<li class="fragment"><p>Let <span class="math inline">\(T: \mathcal{F} \mapsto \mathbb{R}\)</span> be a function.</p></li>
+<li class="fragment"><p>We call <span class="math inline">\(T(F)\)</span> a <em>functional</em>. Depending on context, we may also call <span class="math inline">\(T(\cdot)\)</span> a functional.</p></li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Example</strong>: The mean is a functional, with <span class="math inline">\(T(F) = \int x ~ dF(x)\)</span>. If we introduce <span class="math inline">\(X \sim F\)</span>, then we can instead write <span class="math inline">\(T(F) = \mathbb{E}[X]\)</span>.</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<h3 id="informally-a-functional-is-a-numerical-summary-of-a-distribution."><em>Informally</em>: a functional is a numerical summary of a distribution.</h3>
+<aside class="notes">
+<p>In the rest of today’s class, we will review classical frequentist inference and its connection to scientific goals, using the language of functionals.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="hypothesis-testing" class="slide level1">
+<h1>Hypothesis testing</h1>
+<p>Let <span class="math inline">\(X\)</span> be a random variable (could be scalar, vector, or matrix-valued) with distribution <span class="math inline">\(F\)</span>.</p>
+<p><br></p>
+<div class="fragment">
+<p>The goal of a <em>hypothesis test</em> is to use a realization <span class="math inline">\(x\)</span> from <span class="math inline">\(X\)</span> to decide which of two complementary hypotheses is true:</p>
+<ul>
+<li>The null hypothesis, <span class="math inline">\(H_0: T(F) \in \Theta_0\)</span></li>
+<li>The alternative hypothesis, <span class="math inline">\(H_1: T(F) \in \Theta_0^C\)</span></li>
+</ul>
+<p><br></p>
+</div>
+<div class="fragment">
+<p>We often expect a hypothesis test to output a <strong>p-value</strong>, quantifying the strength of evidence against the null hypothesis.</p>
+</div>
+</section>
+<section id="evaluating-a-hypothesis-test" class="slide level1">
+<h1>Evaluating a hypothesis test</h1>
+<p>What makes a test good?</p>
+<p><br></p>
+<div class="fragment">
+<p><strong>Primary importance</strong>:</p>
+<div>
+<ul>
+<li class="fragment">Control the <em>Type 1 error rate</em>: the probability of rejecting the null if the null hypothesis were true</li>
+<li class="fragment">Produce a <em>valid p-value</em>, i.e.&nbsp;one that is super-uniform under the null hypothesis.</li>
+</ul>
+</div>
+<p><br></p>
+</div>
+<div class="fragment">
+<p><strong>Secondary importance</strong>:</p>
+<ul>
+<li>Have high <em>power</em>: the probablity of rejecting the null if the null hypothesis were not true</li>
+</ul>
+</div>
+</section>
+<section id="why-evaluate-this-way" class="slide level1">
+<h1>Why evaluate this way?</h1>
+<blockquote>
+<p><strong>“I don’t know, it depends on the scientific context at hand.”</strong> - My annoying partner, whenever I ask him ANY question involving statistics.</p>
+</blockquote>
+<p><br></p>
+<div class="fragment">
+<p><strong>Crispest motivating example</strong>: clinical interventions and government regulation of these interventions, specifically in the USA.</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<p><strong>Scientific challenge</strong>: How do we evaluate the efficacy and safety of a clinical intervention in a way that is timely, economical, and reliable?</p>
+<ul>
+<li><em>Why economical?</em> Government cares about tax dollars, businesses care about profit.</li>
+<li><em>Timely and reliable?</em> Medical ethics, government accountability.</li>
+</ul>
+</div>
+</section>
+<section id="clinical-trials" class="slide level1">
+<h1>Clinical trials</h1>
+<blockquote>
+<p><strong>“The primary goal of clinical trials is to obtain a statistically reliable evaluation of whether the experimental intervention is safe and provides clinically meaningful benefit.”</strong> - Thomas Fleming</p>
+</blockquote>
+<div class="fragment">
+<p><u>Phase I</u>: Basic dose range and basic safety (~70% move on)</p>
+<ul>
+<li>Small number of healthy volunteers, no randomization</li>
+</ul>
+</div>
+<div class="fragment">
+<p><u>Phase II</u>: Dose finding and preliminary efficacy/safety (~30% move on)</p>
+<ul>
+<li>Enroll patients, usually randomized</li>
+</ul>
+</div>
+<div class="fragment">
+<p><u>Phase III</u>: Definitive assessment of efficacy and safety (~25-30% move on)</p>
+<ul>
+<li>Enroll lots of patients, definitely randomize</li>
+</ul>
+<aside class="notes">
+<ul>
+<li>Phase 1: 20-80</li>
+<li>Phase 2: 100-300</li>
+<li>Phase 3: 1000-3000, on the best dose</li>
+<li>Phase IV: safety and efficacy after available to public</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="phase-iii-clinical-trials" class="slide level1">
+<h1>Phase III clinical trials</h1>
+<p><strong>Heavily simplified procedure</strong>:</p>
+<div>
+<ul>
+<li class="fragment">Recruit <span class="math inline">\(n\)</span> patients from the population</li>
+<li class="fragment">Randomize 50% of them to control, and randomize 50% of them to treatment</li>
+<li class="fragment">Measure a single outcome, e.g.&nbsp;blood pressure. (Relax this next week!)</li>
+<li class="fragment">Apply a two-tailed test of equality of some functional (e.g.&nbsp;mean, proportion, hazard rate) with <span class="math inline">\(\alpha = 0.05\)</span> to the outcome measurements</li>
+<li class="fragment">Construct the 95% confidence interval as well to go with it</li>
+</ul>
+</div>
+<p><br></p>
+<div class="fragment">
+<h3 id="everything-in-the-analysis-and-design-is-decided-before-the-study-is-conducted-and-cannot-be-changed-after-the-study-is-conducted.">Everything in the analysis and design is decided before the study is conducted, and cannot be changed after the study is conducted.</h3>
+<aside class="notes">
+<ul>
+<li>Extremely simplified! Clinical trials are very complicated. For example next week we will look at trials that measure more than one outcome</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="food-and-drug-administration-fda" class="slide level1">
+<h1>Food and Drug Administration (FDA)</h1>
+<p><strong>Heavily simplified policy: </strong> Approves a clinical intervention if applicant shows that they rejected the null hypothesis in a Phase III clinical trial.</p>
+<p><br></p>
+<h2 id="why-according-to-me">Why? (According to me)</h2>
+<div>
+<ul>
+<li class="fragment"><p>If the FDA approves a clinical intervention, then it will be used to treat a lot of people, and will be assumed by the public to be safe and effective. If we assume wrong then it is a <em>catastrophe</em>.</p></li>
+<li class="fragment"><p>If every Phase III trial controls the Type I error rate at level 0.05, then the FDA can be pretty sure that among a very large amount of ineffective drugs, the proportion that the FDA approves (leading to catastrophe) is no more than 5%.</p></li>
+<li class="fragment"><p>In fact, in reality FDA often expects two independent Phase III trials before it approves, so that it can bound the catastrophe proportion by 0.25%.</p></li>
+</ul>
+</div>
+<aside class="notes">
+<ul>
+<li>Again, extremely simplified. A case made to the FDA is very large (10s, 100s of pages), does NOT just contain the statitsical results, DEFINITELY does’t just contain the p-value from phase 3. But perhaps is the part that applicants worry the most about.</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="what-about-power-what-about-cis" class="slide level1">
+<h1>What about power? What about CIs?</h1>
+<p><strong>Role of a confidence interval</strong>: We do care about knowing <em>how much</em> benefit an intervention offers, not just about proving that it offers <em>nonzero</em> benefit. This is helpful information for clinicians to have.</p>
+<div class="fragment">
+<p><br></p>
+<p><strong>Role of power</strong>: It is damaging to fail to approve an intervention that actually works:</p>
+<div>
+<ul>
+<li class="fragment">Intervention development is expensive and time-consuming</li>
+<li class="fragment">Clinical trials are expensive and time-consuming</li>
+<li class="fragment">Once the FDA rejects an application, the intervention is less likely to be studied again</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<p>So power is important. But it’s <strong>not a catastrophe</strong> from a regulatory agency’s POV to pass on an intervention that actually works. So priority 1 is the <strong>type 1 error rate</strong>, not power.</p>
+<aside class="notes">
+<ul>
+<li>Total cost of drug development: estimated at 2-3 billion</li>
+<li>Median cost of a Phase 3 trial 19m (JAMA Internal Med)</li>
+</ul>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="type-1-error-rate-with-math" class="slide level1">
+<h1>Type 1 error rate, with math</h1>
+<p>“The probability of rejecting the null hypothesis when it holds.”</p>
+<div class="fragment">
+<p><br></p>
+<p>Let <span class="math inline">\(X \sim F_X\)</span>. Suppose that we test <span class="math inline">\(H_0: T(F_X) \in \Theta_0\)</span> using realizations from <span class="math inline">\(X\)</span>.</p>
+</div>
+<div class="fragment">
+<p>We say that we control the type 1 error rate at level <span class="math inline">\(\alpha\)</span> if: <span class="math display">\[\mathbb{P}_{F_X}(\text{Reject } H_0 \text{ using } X) \leq \alpha, ~~~ \text{ for all } F_X \in \mathcal{F}_0,\]</span> where <span class="math inline">\(\mathcal{F}_0 = \{F: T(F) \in \Theta_0\}\)</span>. Equivalently, <span class="math display">\[\underset{F_X \in \mathcal{F}_0}{\sup} ~ \mathbb{P}_{F_X}(\text{Reject } H_0 \text{ using } X) \leq \alpha.\]</span></p>
+</div>
+<div class="fragment">
+<p>It’s often enough for the test to <em>asymptotically</em> control the type 1 error rate.</p>
+</div>
+</section>
+<section id="type-1-error-rate-more-scientifically" class="slide level1">
+<h1>Type 1 error rate, more scientifically</h1>
+<p>“The probability of rejecting the null hypothesis when it holds.” <span class="math display">\[\mathbb{P}_{F_X}(\text{Reject } H_0 \text{ using } X) \leq \alpha\]</span></p>
+<div class="fragment">
+<p><br></p>
+<p>Suppose that <span class="math inline">\(F_X\)</span> satisfies <span class="math inline">\(H_0\)</span>. (The data generating mechanism satisfies null hypothesis. ) Then:</p>
+<div>
+<ul>
+<li class="fragment"><p>Repeat the data collection <span class="math inline">\(N\)</span> times to get <span class="math inline">\(N\)</span> realizations (“replicate data sets”) from <span class="math inline">\(X \sim F_X\)</span>, for <span class="math inline">\(N\)</span> very large</p></li>
+<li class="fragment"><p>Test <span class="math inline">\(H_0\)</span> using each realization</p></li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<p><br></p>
+<h3 id="the-type-i-error-rate-is-the-proportion-of-replicate-data-sets-in-which-we-reject-the-null-hypothesis-when-it-holds.">The type I error rate is the proportion of replicate data sets in which we reject the null hypothesis, when it holds.</h3>
+</div>
+</section>
+<section id="valid-p-values" class="slide level1">
+<h1>Valid p-values</h1>
+<p>A p-value is <em>valid</em> if it is (super-)uniform under the null hypothesis.</p>
+<div class="fragment">
+<p><br></p>
+<p>Let <span class="math inline">\(X \sim F_X\)</span>. Let <span class="math inline">\(p(X)\)</span> be a p-value computed on <span class="math inline">\(X\)</span>. We say that the p-value is valid for <span class="math inline">\(H_0: T(F_X) \in \Theta_0\)</span> if: <span class="math display">\[\mathbb{P}_{F_X}(p(X) \leq \alpha) \leq \alpha, ~~~ \text{ for all } F_X \in \mathcal{F}_0 \text{ and all } 0 \leq \alpha \leq 1.\]</span> Equivalently, <span class="math display">\[\underset{F_X \in \mathcal{F}_0}{\sup} ~ \mathbb{P}_{F_X}(p(X) \leq \alpha) \leq \alpha, ~~~ \text{ for all } 0 \leq \alpha \leq 1.\]</span></p>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>Note that for <span class="math inline">\(U \sim \text{Uniform}(0, 1)\)</span>, <span class="math inline">\(P(U \leq \alpha) = \alpha\)</span>.</p>
+</div>
+</section>
+<section id="valid-p-values-and-type-i-error-rate" class="slide level1">
+<h1>Valid p-values and type I error rate</h1>
+<p>Valid p-values are an “easy” way to construct a test that controls the type 1 error rate at level <span class="math inline">\(\alpha\)</span>:</p>
+<ul>
+<li>Reject <span class="math inline">\(H_0\)</span> on the basis of <span class="math inline">\(x\)</span> whenever <span class="math inline">\(p(x) \leq \alpha\)</span>.</li>
+</ul>
+<div class="fragment">
+<p>To see this, compare the equations:</p>
+<p><span class="math display">\[\text{Type I error rate: }~~~\underset{F_X \in \mathcal{F}_0}{\sup} ~ \mathbb{P}_{F_X}(\text{Reject } H_0 \text{ using } X) \leq \alpha,\]</span></p>
+</div>
+<div class="fragment">
+<p><span class="math display">\[\text{Valid p-value: }~~~\underset{F_X \in \mathcal{F}_0}{\sup} ~ \mathbb{P}_{F_X}(p(X) \leq \alpha) \leq \alpha.\]</span></p>
+</div>
+<div class="fragment">
+<p>Again, we are often happy enough if the p-value is <em>asymptotically</em> valid.</p>
+</div>
+</section>
+<section id="easy-valid-p-value-construction" class="slide level1">
+<h1>“Easy” valid p-value construction</h1>
+<p>Let <span class="math inline">\(S(x)\)</span> be a test statistic computed on a realization <span class="math inline">\(x\)</span> from <span class="math inline">\(X\)</span>, where large values give evidence against <span class="math inline">\(H_0: T(F_X) \in \Theta_0\)</span>.</p>
+<div class="fragment">
+<p>Consider the p-value</p>
+<p><span class="math display">\[p(x) = \underset{F_X \in \mathcal{F}_0}{\sup} \mathbb{P}_{F_X}(S(X) \geq S(x)).\]</span></p>
+</div>
+<div class="fragment">
+<p>Then, <span class="math inline">\(p(X)\)</span> is a valid p-value. (Prove for hwk. Hint: probability integral transform theorem. )</p>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>To make calculating the <span class="math inline">\(\sup\)</span> easier, try to pick test statistics <span class="math inline">\(S(X)\)</span> that are (asymptotically) <em>pivots</em>, i.e.&nbsp;the distribution of <span class="math inline">\(S(X)\)</span> is the same for any <span class="math inline">\(F_X \in \mathcal{F}_0\)</span>.</p>
+</div>
+</section>
+<section id="example-1-two-sample-testing" class="slide level1">
+<h1>Example 1: Two-sample testing</h1>
+<p>Let <span class="math inline">\(X_1, \ldots, X_m\)</span> be i.i.d. copies of <span class="math inline">\(X^* \sim \mathbb{F}_X\)</span>. Let <span class="math inline">\(Y_1, \ldots, Y_n\)</span> be i.i.d. copies of <span class="math inline">\(Y^* \sim \mathbb{F}_Y\)</span>. Let all <span class="math inline">\(X\)</span>’s be independent from all <span class="math inline">\(Y\)</span>’s. Using realizations <span class="math inline">\(x_1, \ldots, x_m\)</span>, <span class="math inline">\(y_1, \ldots, y_n\)</span>, test:</p>
+<ul>
+<li><span class="math inline">\(H_0: \int x ~dF_X - \int y ~dF_Y = 0\)</span></li>
+<li><span class="math inline">\(H_1: \int x ~dF_X - \int y ~dF_Y \neq 0\)</span></li>
+</ul>
+<div class="fragment">
+<p>Here, the model is infinite-dimensional, and the functional we care about is the difference in means.</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<h3 id="take-a-simple-random-sample-from-each-of-two-large-populations-and-use-the-data-to-test-the-null-hypothesis-that-the-means-of-the-two-populations-are-equal.">Take a simple random sample from each of two large populations, and use the data to test the null hypothesis that the means of the two populations are equal.</h3>
+</div>
+</section>
+<section id="example-1-continued" class="slide level1">
+<h1>Example 1, continued</h1>
+<p>When <span class="math inline">\(\min\{m, n\}\)</span> is large, the two-sample <span class="math inline">\(t\)</span>-test is practically equivalent to the following:</p>
+<div>
+<ul>
+<li class="fragment"><strong>Test statistic</strong>: <span class="math inline">\(S(x, y) = \frac{\bar{x} - \bar{y}}{\sqrt{s^2_x/m + s^2_y/n}}\)</span></li>
+<li class="fragment"><strong>p-value</strong>: <span class="math inline">\(p(x, y) = \mathbb{P}(|Z| \geq |S(x, y)|)\)</span> for <span class="math inline">\(Z \sim N(0, 1)\)</span>.</li>
+</ul>
+</div>
+<div class="fragment">
+<p><br></p>
+<p>Let <span class="math inline">\(\mathcal{F}_0 = \{(F, F'): \int x ~dF = \int x ~dF'\}\)</span>. The p-value from the two-sample <span class="math inline">\(t\)</span>-test can be viewed as approximating the following valid p-value, <span class="math display">\[\sup_{(F_X, F_Y) \in \mathcal{F}_0} ~~ \mathbb{P}_{F_X, F_Y}(|S(X, Y)| \geq |S(x, y)|)\]</span></p>
+<p><strong>When is this approximation warranted?</strong></p>
+</div>
+</section>
+<section id="example-1-continued-1" class="slide level1">
+<h1>Example 1, continued</h1>
+<p>Conveniently, approximation is reasonable when <span class="math inline">\(\min\{m, n\}\)</span> is large!</p>
+<p><br></p>
+<div class="fragment">
+<p>When <span class="math inline">\((F_X, F_Y) \in \mathcal{F}_0\)</span>, we have <span class="math inline">\(\mathbb{E}[X^*] - \mathbb{E}[Y^*] = 0\)</span>, and as <span class="math inline">\(\min\{m, n\} \rightarrow \infty\)</span>, <span class="math display">\[\frac{\bar{X} - \bar{Y}}{\sqrt{s^2_X/m + s^2_Y/n}} \overset{d}{\longrightarrow} N(0, 1).\]</span></p>
+</div>
+<div class="fragment">
+<p>i.e.&nbsp;<span class="math inline">\(S(X, Y)\)</span> asymptotically pivotal under the null, so the distribution of <span class="math inline">\(S(X, Y)\)</span> is basically close enough to the distribution <span class="math inline">\(Z\)</span> for any <span class="math inline">\((F_X, F_Y) \in \mathcal{F}_0\)</span>.</p>
+</div>
+<div class="fragment">
+<p>(<em>Proof sketch</em>: Lindeberg-Feller CLT to show that <span class="math inline">\(\frac{\bar{X} - \bar{Y}}{\text{Var}(\bar{X} - \bar{Y})} \overset{d}{\longrightarrow} N(0, 1)\)</span>, show <span class="math inline">\(\frac{\text{Var}(\bar{X} - \bar{Y})}{s_X^2/m + s_Y^2/n} \overset{p}{\longrightarrow} 1\)</span>, continuous mapping.)</p>
+</div>
+</section>
+<section id="example-1-wrapping-up" class="slide level1">
+<h1>Example 1, wrapping up</h1>
+<p>We can say that the two-sample <span class="math inline">\(t\)</span>-test (with unequal variance) asymptotically:</p>
+<div>
+<ul>
+<li class="fragment">Produces valid p-values … and in fact, converges to a Uniform(0, 1) distribution</li>
+<li class="fragment">Controls the Type 1 error rate at nominal level <span class="math inline">\(\alpha\)</span> … and in fact, asymptotically achieves an exact error rate of <span class="math inline">\(\alpha\)</span>.</li>
+</ul>
+</div>
+<div class="fragment">
+<p><strong>Note</strong>: Similarly agnostic treatment is available for linear regression, despite its heavily parametric reputation; we will see this in the selective inference part of the class.</p>
+<aside class="notes">
+<p>Or perhaps you have seen some of this in STAT 406 or elsewhere!</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</div>
+</section>
+<section id="power-with-math" class="slide level1">
+<h1>Power, with math</h1>
+<p>“The probability of rejecting the null if the null hypothesis were false”.</p>
+<p><br></p>
+<div class="fragment">
+<p>There are often lots of ways for the null hypothesis to not be true.</p>
+<div>
+<ul>
+<li class="fragment">Consider hypotheses of the form <span class="math inline">\(H_0: T(\mathbb{F}) = 0\)</span> vs <span class="math inline">\(H_1: T(\mathbb{F}) \neq 0\)</span>.</li>
+<li class="fragment">Rejection probability when <span class="math inline">\(T(\mathbb{F}) = 10\)</span> is naturally very different from rejection probability <span class="math inline">\(\mathbb{F}\)</span> satisfies <span class="math inline">\(T(\mathbb{F}) = 0.1\)</span>!</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<p>For that reason, we care about a whole <em>power function</em>. Let <span class="math inline">\(\mathcal{F}(c) = \{ \mathcal{F}: T(\mathcal{F}) = c\}\)</span>, and assume that for any <span class="math inline">\(c \in \mathbb{R}\)</span>, the test statistic’s distribution is the same for all <span class="math inline">\(F_X \in \mathcal{F}(c)\)</span>.</p>
+<p><span class="math display">\[\text{Power}(c) = \mathbb{P}_{F_X \in \mathcal{F}(c)}(\text{Reject } H_0 \text{ based on } X).\]</span></p>
+</div>
+<div class="fragment">
+<p>Note that <span class="math inline">\(\text{Power}(0)\)</span> is the type I error rate!</p>
+</div>
+</section>
+<section id="power-more-scientifically" class="slide level1">
+<h1>Power, more scientifically</h1>
+<p>“The probability of rejecting the null if the null hypothesis were false”. <span class="math display">\[\mathbb{P}_{F_X \in \mathcal{F}(c)}(\text{Reject } H_0 \text{ based on } X)\]</span></p>
+<div class="fragment">
+<p>Suppose that <span class="math inline">\(F_X \in \mathcal{F}(c)\)</span>. (The null hypothesis is false, and scalar functional of interest takes value <span class="math inline">\(c\)</span>.) Then:</p>
+<div>
+<ul>
+<li class="fragment">Repeat the data collection <span class="math inline">\(N\)</span> times to get <span class="math inline">\(N\)</span> realizations (“replicate data sets”) from <span class="math inline">\(X \sim F_X\)</span>, for <span class="math inline">\(N\)</span> very large</li>
+<li class="fragment">Test <span class="math inline">\(H_0\)</span> using each realization</li>
+</ul>
+</div>
+</div>
+<div class="fragment">
+<h3 id="the-power-is-the-proportion-of-replicate-data-sets-in-which-we-reject-the-null-hypothesis-for-a-particular-effect-size.">The power is the proportion of replicate data sets in which we reject the null hypothesis for a particular effect size.</h3>
+</div>
+</section>
+<section id="confidence-setsintervals" class="slide level1">
+<h1>Confidence sets/intervals</h1>
+<p>The goal of a <em>confidence set</em> is to use a draw from <span class="math inline">\(X\)</span> to compute a <em>set-valued</em> estimate of the functional <span class="math inline">\(T(F_X)\)</span>.</p>
+<p><br></p>
+<div class="fragment">
+<p><strong>What’s the point of this?</strong></p>
+<div>
+<ul>
+<li class="fragment">Make a less strong assertion about the value of <span class="math inline">\(T(F_X)\)</span> than the point estimate.</li>
+<li class="fragment">… in return, gain <em>confidence</em> about how the interval estimate relates to the value of <span class="math inline">\(T(F_X)\)</span></li>
+</ul>
+</div>
+<p><br></p>
+</div>
+<div class="fragment">
+<p><strong>For simplicity:</strong></p>
+<div>
+<ul>
+<li class="fragment">We usually only compute confidence sets for scalar-valued functionals, and …<br>
+</li>
+<li class="fragment">we additionally try to design them to guarantee that they are <em>intervals</em>.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="evaluating-confidence-intervals" class="slide level1">
+<h1>Evaluating confidence intervals</h1>
+<div class="fragment">
+<p><strong>Primary importance</strong>:</p>
+<div>
+<ul>
+<li class="fragment">Attain nominal coverage: this is how we define “gain confidence” about how the interval estimate relates to the value of <span class="math inline">\(T(F_X)\)</span></li>
+<li class="fragment">If we don’t have nominal coverage, then we don’t gain any confidence in reporting an interval estimate, so what’s the point?</li>
+</ul>
+</div>
+<p><br></p>
+</div>
+<div class="fragment">
+<p><strong>Secondary importance</strong>:</p>
+<div>
+<ul>
+<li class="fragment">Have small length, i.e.&nbsp;be short</li>
+<li class="fragment">If the confidence interval is valid (has nominal coverage properties), then we can begin to care about making more precise assertions.</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="coverage" class="slide level1">
+<h1>Coverage</h1>
+<p>Let <span class="math inline">\(L(x)\)</span> and <span class="math inline">\(U(x)\)</span> be functions that map data to a lower and upper limit for a confidence interval intended to cover <span class="math inline">\(T(F_X)\)</span>, respectively.</p>
+<div class="fragment">
+<p>We want the following to be true for any <span class="math inline">\(\theta\)</span> in <span class="math inline">\(\Theta\)</span>, the range of <span class="math inline">\(T(\cdot)\)</span>:<br>
+<span class="math display">\[\mathbb{P}_{F_X} (L(X) \geq \theta \text{ and } U(X) \leq \theta) \geq 1 - \alpha, ~~~ \text{for all } F_X \in \mathcal{F}_\theta \equiv \{ F: T(F) = \theta\}.\]</span></p>
+</div>
+<div class="fragment">
+<p>Equivalently, <span class="math display">\[\underset{\theta \in \Theta}{\inf} ~ \underset{F_X \in \mathcal{F}_\theta}{\inf} ~ \mathbb{P}_{F_X} (L(X) \geq \theta \text{ and } U(X) \leq \theta) \geq 1 - \alpha.\]</span></p>
+</div>
+<div class="fragment">
+<h3 id="across-many-repetitions-of-the-study-the-proportion-of-the-intervals-containing-tf_x-is-at-least-1-alpha-regardless-of-what-f_x-is-and-what-the-value-of-tf_x-is.">“Across many repetitions of the study, the proportion of the intervals containing <span class="math inline">\(T(F_X)\)</span> is at least <span class="math inline">\(1-\alpha\)</span>, regardless of what <span class="math inline">\(F_X\)</span> is, and what the value of <span class="math inline">\(T(F_X)\)</span> is.”</h3>
+</div>
+</section>
+<section id="length" class="slide level1">
+<h1>Length</h1>
+<p>The length of an interval constructed with a realization <span class="math inline">\(x\)</span> (e.g.&nbsp;the data from a specific experiment) is <span class="math inline">\([L(x), U(x)]\)</span> is <span class="math inline">\(U(x) - L(x)\)</span>.</p>
+<p><br></p>
+<div class="fragment">
+<p>The length of the intervals you construct when <em>repeating</em> the experiment is a <em>random variable</em>, <span class="math inline">\(U(X) - L(X)\)</span>.</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<p>This random variable has a distribution to be summarized like any other. Commonly seen summaries include:</p>
+<ul>
+<li>Expected length, <span class="math inline">\(\mathbb{E}[U(X) - L(X)]\)</span></li>
+<li>Median length, <span class="math inline">\(\text{median}(U(X) - L(X))\)</span>.</li>
+</ul>
+<p><strong>Note</strong>: Not everyone agrees that these are good summaries. See e.g.&nbsp;Pratt (JASA 1961).</p>
+</div>
+</section>
+<section id="construction-inverting-a-valid-test" class="slide level1">
+<h1>Construction: “Inverting a valid test”</h1>
+<p>Recall the following result, an “agnostification” of Theorem 9.2.2 in Casella and Berger:</p>
+<div class="callout callout-tip callout-titled callout-style-default">
+<div class="callout-body">
+<div class="callout-title">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<p><strong>Every confidence set corresponds to a family of tests and vice versa</strong></p>
+</div>
+<div class="callout-content">
+<p>Let <span class="math inline">\(X \sim F_X\)</span>. Let <span class="math inline">\(T(\cdot)\)</span> be a functional, and let <span class="math inline">\(\Theta\)</span> be the range of <span class="math inline">\(T\)</span>. For each <span class="math inline">\(\theta_0 \in \Theta\)</span>, let <span class="math inline">\(A(\theta_0\)</span>) be the acceptance region of a level <span class="math inline">\(\alpha\)</span> test of <span class="math inline">\(H_0: T(F_X) = \theta_0\)</span>. Furthermore, define <span class="math display">\[ C(x) = \{\theta_0: x \in A(\theta_0)\}.\]</span> Then, <span class="math inline">\(C(X)\)</span> is a confidence set for <span class="math inline">\(T(F_X)\)</span> with <span class="math inline">\(100(1- \alpha)\)</span>% coverage. Conversely, suppose that <span class="math inline">\(C(X)\)</span> is a confidence set for <span class="math inline">\(T(F_X)\)</span> with <span class="math inline">\((1- \alpha)\)</span>% coverage. Then, for any <span class="math inline">\(\theta_0 \in \Theta\)</span>, define <span class="math display">\[A(\theta_0) = \{x: \theta_0 \in C(x)\}.\]</span> Then, using <span class="math inline">\(A(\theta_0)\)</span> to construct the acceptance region of a test of <span class="math inline">\(H_0: T(F_X) = \theta_0\)</span> yields a test of level <span class="math inline">\(\alpha\)</span>.</p>
+</div>
+</div>
+</div>
+</section>
+<section id="result-implications" class="slide level1">
+<h1>Result implications</h1>
+<ol type="1">
+<li>As long as we can make valid tests of <span class="math inline">\(H_0: T(F_X) = \theta_0\)</span> for any <span class="math inline">\(\theta_0\)</span>, we can make a valid confidence set.</li>
+</ol>
+<p><br></p>
+<div class="fragment">
+<ol start="2" type="1">
+<li>The following interpretation of a <span class="math inline">\(100(1-\alpha)\)</span>% confidence interval <span class="math inline">\([L(x), U(x)]\)</span> is valid:</li>
+</ol>
+<blockquote>
+<p>“[L(x), U(x)] contains all values of <span class="math inline">\(\theta_0\)</span> such that I would not reject the null hypothesis <span class="math inline">\(H_0: \theta = \theta_0\)</span> based on <span class="math inline">\(x\)</span> at level <span class="math inline">\(\alpha\)</span>.”</p>
+</blockquote>
+</div>
+<div class="fragment">
+<p>Informally:</p>
+<blockquote>
+<p>“[L(x), U(x)] contains all values of <span class="math inline">\(\theta_0\)</span> that (to my best knowledge) could plausibly have generated the data <span class="math inline">\(x\)</span>.”</p>
+</blockquote>
+</div>
+</section>
+<section id="example-2-two-sample-inference" class="slide level1">
+<h1>Example 2: Two-sample inference</h1>
+<p>Let <span class="math inline">\(X_1, \ldots, X_m\)</span> be i.i.d. copies of <span class="math inline">\(X^* \sim F_X\)</span>. Let <span class="math inline">\(Y_1, \ldots, Y_n\)</span> be i.i.d. copies of <span class="math inline">\(Y^* \sim F_Y\)</span>. Let all <span class="math inline">\(X\)</span>’s be independent from all <span class="math inline">\(Y\)</span>’s. Using realizations <span class="math inline">\(x_1, \ldots, x_m\)</span>, <span class="math inline">\(y_1, \ldots, y_n\)</span>, construct an interval estimate of the quantity <span class="math inline">\(\int x ~ dF_X - \int y ~dF_Y = \mathbb{E}[X^*] - \mathbb{E}[Y^*]\)</span>.</p>
+<p><br></p>
+<div class="fragment">
+<p>Inverting the two-sample <span class="math inline">\(t\)</span>-test (essentially) yields the following interval bounds:</p>
+<ul>
+<li><span class="math inline">\(L(x) = \bar{x} - \bar{y} - Z_{1-\alpha/2} \sqrt{s^2_x/m + s^2_y/n}\)</span></li>
+<li><span class="math inline">\(U(x) = \bar{x} - \bar{y} + Z_{1-\alpha/2} \sqrt{s^2_x/m + s^2_y/n}\)</span></li>
+</ul>
+<p><br></p>
+<p>Here, <span class="math inline">\(Z_{1-\alpha/2}\)</span> is the <span class="math inline">\(100(1-\alpha/2)\)</span>th quantile of the standard normal distribution.</p>
+</div>
+</section>
+<section id="example-2-continued" class="slide level1">
+<h1>Example 2, continued</h1>
+<p>We know from earlier that the two-sample <span class="math inline">\(t\)</span>-test is asymptotically valid as <span class="math inline">\(\min\{m, n\} \rightarrow \infty\)</span>.</p>
+<p><br></p>
+<div class="fragment">
+<p>Technically we derived it for testing <span class="math inline">\(H_0: \mathbb{E}[X^*] - \mathbb{E}[Y^*] = 0\)</span>, but we could have adapted it to <span class="math inline">\(H_0: \mathbb{E}[X^*] - \mathbb{E}[Y^*] = c\)</span> for any <span class="math inline">\(c \in \mathbb{R}\)</span>. . . .</p>
+<p><br></p>
+<p>Since we got our interval by inverting this family of asymptotically two-sample <span class="math inline">\(t\)</span>-tests, it follows that the interval has <strong>asymptotically correct coverage</strong>.</p>
+<p><br></p>
+</div>
+<div class="fragment">
+<p>This justifies the use of a <span class="math inline">\(t\)</span>-interval when <span class="math inline">\(\min\{m, n\}\)</span> is sufficiently large.</p>
+<div class="footer footer-default">
+
+</div>
+</div>
+</section>
+    </div>
+  </div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="lec-01-classical_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="lec-01-classical_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="lec-01-classical_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="lec-01-classical_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'smaller': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1600,
+
+        height: 900,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    
+    <script>
+      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
+      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
+      // slide changes (different for each slide format).
+      (function () {
+        // dispatch for htmlwidgets
+        function fireSlideEnter() {
+          const event = window.document.createEvent("Event");
+          event.initEvent("slideenter", true, true);
+          window.document.dispatchEvent(event);
+        }
+
+        function fireSlideChanged(previousSlide, currentSlide) {
+          fireSlideEnter();
+
+          // dispatch for shiny
+          if (window.jQuery) {
+            if (previousSlide) {
+              window.jQuery(previousSlide).trigger("hidden");
+            }
+            if (currentSlide) {
+              window.jQuery(currentSlide).trigger("shown");
+            }
+          }
+        }
+
+        // hookup for slidy
+        if (window.w3c_slidy) {
+          window.w3c_slidy.add_observer(function (slide_num) {
+            // slide_num starts at position 1
+            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
+          });
+        }
+
+      })();
+    </script>
+
+    <script id="quarto-html-after-body" type="application/javascript">
+    window.document.addEventListener("DOMContentLoaded", function (event) {
+      const toggleBodyColorMode = (bsSheetEl) => {
+        const mode = bsSheetEl.getAttribute("data-mode");
+        const bodyEl = window.document.querySelector("body");
+        if (mode === "dark") {
+          bodyEl.classList.add("quarto-dark");
+          bodyEl.classList.remove("quarto-light");
+        } else {
+          bodyEl.classList.add("quarto-light");
+          bodyEl.classList.remove("quarto-dark");
+        }
+      }
+      const toggleBodyColorPrimary = () => {
+        const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+        if (bsSheetEl) {
+          toggleBodyColorMode(bsSheetEl);
+        }
+      }
+      toggleBodyColorPrimary();  
+      const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+      tabsets.forEach(function(tabset) {
+        const tabby = new Tabby('#' + tabset.id);
+      });
+      const isCodeAnnotation = (el) => {
+        for (const clz of el.classList) {
+          if (clz.startsWith('code-annotation-')) {                     
+            return true;
+          }
+        }
+        return false;
+      }
+      const clipboard = new window.ClipboardJS('.code-copy-button', {
+        text: function(trigger) {
+          const codeEl = trigger.previousElementSibling.cloneNode(true);
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+      });
+      clipboard.on('success', function(e) {
+        // button target
+        const button = e.trigger;
+        // don't keep focus
+        button.blur();
+        // flash "checked"
+        button.classList.add('code-copy-button-checked');
+        var currentTitle = button.getAttribute("title");
+        button.setAttribute("title", "Copied!");
+        let tooltip;
+        if (window.bootstrap) {
+          button.setAttribute("data-bs-toggle", "tooltip");
+          button.setAttribute("data-bs-placement", "left");
+          button.setAttribute("data-bs-title", "Copied!");
+          tooltip = new bootstrap.Tooltip(button, 
+            { trigger: "manual", 
+              customClass: "code-copy-button-tooltip",
+              offset: [0, -8]});
+          tooltip.show();    
+        }
+        setTimeout(function() {
+          if (tooltip) {
+            tooltip.hide();
+            button.removeAttribute("data-bs-title");
+            button.removeAttribute("data-bs-toggle");
+            button.removeAttribute("data-bs-placement");
+          }
+          button.setAttribute("title", currentTitle);
+          button.classList.remove('code-copy-button-checked');
+        }, 1000);
+        // clear code selection
+        e.clearSelection();
+      });
+      function tippyHover(el, contentFn) {
+        const config = {
+          allowHTML: true,
+          content: contentFn,
+          maxWidth: 500,
+          delay: 100,
+          arrow: false,
+          appendTo: function(el) {
+              return el.closest('section.slide') || el.parentElement;
+          },
+          interactive: true,
+          interactiveBorder: 10,
+          theme: 'light-border',
+          placement: 'bottom-start'
+        };
+          config['offset'] = [0,0];
+          config['maxWidth'] = 700;
+        window.tippy(el, config); 
+      }
+      const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+      for (var i=0; i<noterefs.length; i++) {
+        const ref = noterefs[i];
+        tippyHover(ref, function() {
+          // use id or data attribute instead here
+          let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+          try { href = new URL(href).hash; } catch {}
+          const id = href.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          return note.innerHTML;
+        });
+      }
+      const findCites = (el) => {
+        const parentEl = el.parentElement;
+        if (parentEl) {
+          const cites = parentEl.dataset.cites;
+          if (cites) {
+            return {
+              el,
+              cites: cites.split(' ')
+            };
+          } else {
+            return findCites(el.parentElement)
+          }
+        } else {
+          return undefined;
+        }
+      };
+      var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+      for (var i=0; i<bibliorefs.length; i++) {
+        const ref = bibliorefs[i];
+        const citeInfo = findCites(ref);
+        if (citeInfo) {
+          tippyHover(citeInfo.el, function() {
+            var popup = window.document.createElement('div');
+            citeInfo.cites.forEach(function(cite) {
+              var citeDiv = window.document.createElement('div');
+              citeDiv.classList.add('hanging-indent');
+              citeDiv.classList.add('csl-entry');
+              var biblioDiv = window.document.getElementById('ref-' + cite);
+              if (biblioDiv) {
+                citeDiv.innerHTML = biblioDiv.innerHTML;
+              }
+              popup.appendChild(citeDiv);
+            });
+            return popup.innerHTML;
+          });
+        }
+      }
+    });
+    </script>
+    
+
+</body></html>

@@ -1,0 +1,770 @@
+---
+title: "Multiple Testing and the FDA"
+author: "Lucy Gao"
+date: "Jan 16 2024"
+date-format: long
+format: 
+  revealjs:
+    chalkboard: true
+    slide-number: c/t
+    slide-level: 1
+    width: 1600 
+    height: 900 
+    echo: true
+    theme: [default, custom.scss]
+    show-notes: false
+---
+
+# Multiple Testing
+
+<br>
+
+**My definition**: Whenever we conduct more than one hypothesis test in a single analysis, and look at the outcome of all of them.
+
+
+::: {.incremental}
+
+-   Does this cause problems? If so, what are they?
+-   Do we need to adjust for multiple testing? If so, how should we adjust? 
+
+::: 
+
+<br>
+
+. . .
+
+> **"I don't know, it depends on the scientific problem at hand."** - My annoying partner, whenever I ask him ANY question involving statistics.
+
+# Today's science
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("img/fda.png")
+```
+
+
+::: {.notes} 
+- 29 pages; probably prepared by mathematical statisticians in the Biometrics division. (Quite a few of my classmates work here!)
+::: 
+
+# Recall: FDA
+
+::: {.incremental} 
+
+-   An experimental intervention is approved if applicant can show sufficient evidence of efficacy, with evidence gathered by hypothesis testing
+-   Approval by the FDA is (essentially) the last barrier before the intervention goes to market
+-   Mistakes are very hard to correct
+::: 
+
+<br>
+
+. . .
+
+### When deciding how to map data analysis results to regulatory decisions, the FDA's first priority is controlling the proportion of approvals when reviewing $N_0$ treatments with no benefit ($N_0$ big).
+
+# Recall: clinical trials
+
+**Heavily simplified procedure**:
+
+-   Recruit $n$ patients from the population
+-   Randomize 50% of them to control, and randomize 50% of them to treatment
+-   Measure a single outcome, e.g. blood pressure.
+-   Apply a two-tailed test of equality of some functional (e.g. mean, proportion, hazard rate) with $\alpha = 0.05$ to the outcome measurements
+-   Construct the 95% confidence interval as well to go with it
+
+. . .
+
+Across $N_0$ trials for treatments with no benefit, no more than $0.05N_0$ approvals ($N_0$ big).
+
+<br>
+
+### Here, "benefit" means treatment has an effect on the single outcome.
+
+# FDA Guidelines for $>1$ Outcome
+
+::: {.incremental}
+
+-   Study can be planned to measure $M$ outcomes for $M > 1$
+-   $M$ outcomes lead to $M$ tests and $M$ confidence intervals
+-   But the FDA needs to lay out how those $M$ hypothesis testing results map to approval
+
+::: 
+
+. . .
+
+<br>
+
+Two cases, depending on definition of the word "benefit":
+
+::: {.incremental} 
+
+1.  "Benefit" means "has an effect on all $M$ outcomes"
+
+2.  "Benefit" means "has an effect on at least one outcome out of $M$ total outcomes"
+
+::: 
+
+. . .
+
+How should we define benefit?
+
+
+# Scientific considerations
+
+**Benefit = has an effect on all outcomes**
+
+<br>
+
+Example 1: Migraine
+
+::: {.incremental} 
+
+-   Pain, but also "extra stuff": nausea, light sensitivity, sound sensitivity
+-   Past: benefit = changed all extra stuff
+-   Now: benefit = changed pain and changed the patient's most hated "extra" symptom
+::: 
+
+<br>
+
+. . .
+
+Example 2: Combination vaccine (MMR, DTaP, etc.)
+
+::: {.incremental}
+-   Is it really sensible to approve if it doesn't have efficacy against all diseases?
+:::
+
+# Scientific considerations
+
+**Benefit = has an effect on at least one outcome**
+
+<br>
+
+
+At the time of trial design:
+
+::: {.incremental}
+
+-   We might not know what aspect of the disease will respond to the treatment
+
+-   The community might not agree on which aspect(s) must be addressed for the intervention to be clinically meaningful
+::: 
+
+<br>
+
+. . .
+
+### We might feel comfortable saying that if the treatment has an effect on *any* of the outcomes, then it can be safely declared "clinically effective".
+
+# Regulatory mapping
+
+**Multiple outcomes version**
+
+<br>
+
+In the following, we will explore ...
+
+::: {.incremental}
+
+-   Different mappings between data analysis results for $M$ hypothesis tests to decisions (approval or not)
+
+-   Which mappings honour the FDA's goals: across $N_0$ trials for treatments with no benefit, no more than $0.05N_0$ approvals ($N_0$ big).
+
+:::
+
+<br>
+
+. . .
+
+### Two cases: "all outcomes" and "$\geq$ 1" outcome
+
+# All outcomes, naive approach
+
+Suppose that we have $M$ outcomes, and are interested in testing $M$ null hypotheses of no difference in a pre-specified functional (e.g. the mean) across groups.
+
+. . .
+
+A naive idea: Approve the treatment if all $M$ p-values are below $\alpha$.
+
+<br>
+
+. . .
+
+### Your turn: Do you think this policy controls the proportion of approving treatments with no benefit?
+
+::: {.notes} 
+- 5 minutes 
+::: 
+
+::: {.incremental} 
+
+-   Remember: benefit means "has an effect on all outcomes"
+
+-   Turn it around: what does "no benefit" mean?
+
+:::
+
+# All outcomes, naive approach
+**Statistical setup** 
+
+Let $X \sim F_X$ represent the data with which we test $H_{0j}: T_j(F_X) = 0$ for all $j = 1, 2, \ldots, M$.
+
+. . .
+
+Let $p_j(x)$ be the p-value function for testing $H_{0j}$. Assume that it's valid and based on a pivot: $$ \mathbb{P}_{F_X}(p_j(X) \leq \alpha) = \alpha, ~~~ \text{ for all } F_X \in \mathcal{F}_{0j} \equiv \{F: T_j(F_X) = 0\}.$$ 
+
+. . .
+
+"Benefit" means $F_X$ satisfies all of $H_{11}, \ldots, H_{1M}$. So the (worst-case) probability of approving a treatment with no benefit is:
+
+$$\underset{F_X \in \left [\bigcap \limits_{j=1}^M \mathcal{F}_{0j}^C \right ]^C}{\sup} ~ \mathbb{P}_{F_X} (p_1(X) \leq \alpha, \ldots, p_M(X) \leq \alpha) $$
+
+# All outcomes, naive approach
+**Statistical setup**
+
+Suppose that $F_X \in \left [\bigcap \limits_{j=1}^M \mathcal{F}_{0j}^C \right ]^C = \bigcup \limits_{j=1}^M \mathcal{F}_{0j}$. Then, let $j^*$ be an index for which $F_X \in \mathcal{F}_{0j^*}$. 
+
+. . .
+
+Follows that:
+
+$$ 
+\begin{align} 
+\mathbb{P}_{F_X} (p_1(X) \leq \alpha, \ldots, p_M(X) \leq \alpha) \leq \mathbb{P}_{F_X} (p_{j^*}(X) \leq \alpha) = \alpha.
+\end{align} 
+$$
+
+. . .
+
+Choice of $F_X$ was arbitrary.
+
+<br>
+
+. . .
+
+### Conclusion: the (worst-case) probability of approving a treatment with no benefit is no more than $\alpha$!
+
+# All outcomes
+
+**What is the FDA policy?** 
+
+<br> 
+
+. . .
+
+Exactly the "naive" approach:
+
+::: {.incremental}
+-   For each of $M$ outcomes, test for no difference in the mean across treatment and control groups
+-   Report raw p-values
+-   Approve if all $M$ raw p-values are $\leq \alpha$.
+:::
+
+. . .
+
+**We have shown that this still controls the proportion of approvals when reviewing** $N_0$ treatments with no benefit ($N_0$ big).
+
+::: {.notes} 
+- Does this surprise you? 
+- We don't adjust! 
+- But the science dictates the approach, not the other way around
+::: 
+
+# All outcomes
+
+**What about power?**
+
+. . .
+
+Suppose that under a specific $F_X$ where none of $H_{01}$, $H_{02}$, $H_{03}$ are true:
+
+::: {.incremental}
+-   $p_1(X), p_2(X), p_3(X)$ are mutually independent
+-   $\mathbb{P}_{F_X}(p_1(X) \leq \alpha) = 0.8$, $\mathbb{P}_{F_X}(p_2(X) \leq \alpha) = 0.9$, $\mathbb{P}_{F_X}(p_3(X) \leq \alpha) = 0.95$.
+::: 
+
+. . .
+
+(The idea is that we have chosen the sample size to attain 80% power against $H_{01}$.)
+
+. . .
+
+<br> 
+
+Then, the probability of approving this (beneficial) treatment is: $$\mathbb{P}_{F_X} (p_1(X) \leq \alpha, \ldots, p_3(X) \leq \alpha) = \prod \limits_{j=1}^3 \mathbb{P}_{F_X} (p_k(X) \leq \alpha) = 0.8*0.9*0.95 = 0.684$$
+
+::: {.notes} 
+- If we had just chosen to use the first outcome, then we would have higher power. 
+- This is a reason you will hear people saying "but multiple endpoints reduces power". 
+::: 
+
+# All outcomes
+
+**Should we do anything about this?**
+
+<br> 
+
+Recall that when $H_{0j^*}$ is true (so that the treatment has no clinical benefit), we have $$ 
+\begin{align} 
+\mathbb{P}_{F_X} (p_1(X) \leq \alpha, \ldots, p_M(X) \leq \alpha) \leq \mathbb{P}_{F_X} (p_{j^*}(X) \leq \alpha) = \alpha.
+\end{align} 
+$$
+
+. . .
+
+This bound is only tight when there is one endpoint with no treatment effect, and the rest have infinitely large treatment effects.
+
+<br>
+
+. . .
+
+Often clinically implausible! Feels like there's room to "safely" reject when all p-values are below $\alpha^*$, for $\alpha^* \geq \alpha$. This would offset power loss.
+
+# All outcomes
+
+## FDA's stance
+
+> **There have been suggestions that** $\alpha$ for each co-primary endpoint could be increased from 0.05 to accommodate the loss in statistical power... This is not acceptable because doing so may undermine the ability to interpret a treatment effect on each disease aspect considered critical to show that the drug is effective in support of approval.
+
+
+
+My interpretation:
+
+::: {.incremental} 
+-   It's clinically important to not just know that the treatment is effective, but to *also understand the treatment effect*.
+-   For this we look to the $M$ $100(1-\alpha)$% confidence intervals, and 95% confidence intervals are de rigueur.
+:::
+
+::: {.notes} 
+- How do I interpret a 84% confidence interval? Differently from a 95% confidence interval?  
+::: 
+
+# $\geq 1$ outcomes, naive approach
+
+Suppose that we have $M$ outcomes, and are interested in testing $M$ null hypotheses of no difference in a pre-specified functional (e.g. the mean) across groups.
+
+. . .
+
+The naive idea: Approve the treatment if **any** of the $M$ p-values are below $\alpha$.
+
+<br>
+
+### Your turn: Do you think this policy controls the proportion of approving treatments with no benefit?
+
+::: {.incremental} 
+-   Remember: benefit now means "has an effect on at least one outcomes"
+
+-   Turn it around: what does "no benefit" mean?
+::: 
+
+::: {.notes} 
+
+- 5 minutes?
+
+::: 
+
+# $\geq 1$ outcomes, naive approach
+
+**Statistical setup**
+
+Let $X \sim F_X$ represent the data with which we test $H_{0j}: T_j(F_X) = 0$ for all $j = 1, 2, \ldots, M$.
+
+. . .
+
+Let $p_j(x)$ be the p-value function for testing $H_{0j}$. Assume that it's valid and based on a pivot: $$ \mathbb{P}_{F_X}(p_j(X) \leq \alpha) = \alpha, ~~~ \text{ for all } F_X \in \mathcal{F}_{0j} \equiv \{F: T_j(F_X) = 0\}.$$ 
+
+. . .
+
+"Benefit" means $F_X$ satisfies at least one of $H_{11}, \ldots, H_{1M}$. So the (worst-case) probability of approving a treatment with no benefit is:
+
+$$\underset{F_X \in \bigcap \limits_{j=1}^M \mathcal{F}_{0j}  }{\sup} ~ \mathbb{P}_{F_X} \left ( \bigcup \limits_{j=1}^M \{p_j(X) \leq \alpha\} \right ) $$
+
+# $\geq 1$ outcomes, naive approach
+
+**Statistical setup**
+
+Let $F_X \in \bigcap \limits_{j=1}^M \mathcal{F}_{0j}$. **Assume that** $p_j(X)$ are mutually independent for $X \sim F_X$. Then,
+
+$$
+\begin{align*} 
+\mathbb{P}_{F_X} \left ( \bigcup \limits_{j=1}^M \{p_j(X) \leq \alpha \} \right ) &= 1 - \mathbb{P}_{F_X} \left ( \bigcap \limits_{j=1}^M \{p_j(X) \geq \alpha \} \right ) \\ 
+&\overset{ind}{=} 1 - \prod \limits_{j=1}^M \mathbb{P}_{F_X}(p_j(X) \geq \alpha) = 1 - (1 - \alpha)^M
+\end{align*}
+$$
+
+. . .
+
+#### Under independent outcomes, the (worst-case) probability of approving a treatment with no benefit is BIGGER than $\alpha$!
+
+# $\geq 1$ outcomes, naive approach
+
+## How bad can it get? (independent outcomes)
+
+Let $F_X \in \bigcap \limits_{j=1}^M \mathcal{F}_{0j}$. **Assume that** $p_j(X)$ are mutually independent for $X \sim F_X$.
+
+```{r, echo=FALSE, fig.align="center"}
+library(ggplot2)
+alpha <- 0.05
+df <- data.frame(nOut = 2:10)
+df$type1 <- 1 - (1 - alpha)^df$nOut 
+
+ggplot(df, aes(x = nOut,y = type1)) + geom_point() + 
+  xlab("Number of Independent Outcomes") + ylab("Approval Probability") + 
+  theme_bw(base_size = 22) + 
+  geom_hline(yintercept = 0.05, col = "cornflowerblue", linetype="dashed") + ylim(c(0, 0.45))
+```
+
+# $\geq 1$ outcomes, naive approach
+
+Suppose that we have $M$ outcomes, and are interested in testing $M$ null hypotheses of no difference in a pre-specified functional (e.g. the mean) across groups.
+
+The naive idea: Approve the treatment if **any** of the $M$ p-values are below $\alpha$.
+
+<br>
+
+. . .
+
+#### If the $M$ outcomes are mutually independent, then over $N_0$ treatments with no benefit reviewed, naive policy would approve much more than $0.05N_0$ of them!
+
+
+::: {.incremental} 
+- Note that if outcomes are positively correlated, then we can expect this effect to be less dramatic ... more on this on Thursday!
+::: 
+
+::: {.notes} 
+- So that's the statistical problem. What's the scientific problem? 
+::: 
+
+#  $\geq 1$  outcomes, naive approach
+
+**Another problem: labelling** 
+
+<br> 
+
+. . .
+
+It's clinically important to not just know that the treatment is effective, but to *also understand the treatment effect*.
+
+::: {.incremental} 
+
+-   The treatment is effective against at least one outcome. *Which one?*
+
+-   The naive idea: Approve the treatment being labelled as being effective for outcome $j$ if the $j$th p-value is $\leq \alpha$. <br>
+
+::: 
+
+. . .
+
+### New idea: Even a single false statement about efficacy in a single trial is a catastrophe.
+
+::: {.incremental} 
+-   The naive approach also does not control the proportion of making at least one false statement about efficacy.
+:::
+
+# $\geq 1$ outcomes, naive approach
+
+**Statistical formulation**
+
+We can only make a false statement about efficacy when $F_X \in \bigcup \limits_{j=1}^M \mathcal{F}_{0j}$. 
+
+. . .
+
+So, worst case probability of making $\geq 1$ false statement about efficacy under the naive approach:
+
+$$\underset{F_X \in \bigcup \limits_{j=1}^M \mathcal{F}_{0j}}{\sup} ~~~ \underbrace{ \mathbb{P}_{F_X} \left ( \bigcup \limits_{j=1}^M \{p_j(X) \leq \alpha \} \right )}_{\text{Family wise error rate}}$$ 
+
+. . .
+
+This is bigger than the worst case probability of approving a treatment with no benefit, which the naive approach doesn't control!
+
+# $\geq 1$ outcomes
+
+**So what's the FDA policy?** 
+
+::: {.incremental} 
+- FDA requires applicants to report the $M$ p-values and the results of an *adjustment* procedure that takes those $M$ p-values as input, and outputs which $H_{0j}$ to reject.
+::: 
+
+<br>
+
+. . .
+
+### Procedure must control the family wise error rate at level $\alpha$.
+::: {.incremental} 
+-   This means that the probability of falsely rejecting at least one null hypothesis must be below $\alpha$, regardless of which and how many outcomes the treatment has no effect on.
+
+-   Keeps the proportions of two types of catastrophes low: (1) Approving non-beneficial treatments (2) labelling a treatment as beneficial for an outcome when it isn't
+::: 
+
+# $\geq 1$ outcomes
+## Do we lose power by adjusting? ([Senn and Bretz, 2007](https://onlinelibrary.wiley.com/doi/10.1002/pst.301))
+
+::: columns
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("img/bonferroni-power.png")
+```
+:::
+
+::: {.column width="50%"}
+
+::: {.incremental} 
+-   The power against each of the **individual** $M$ outcomes will be lower than the power of an unadjusted test 
+
+-   But the power to detect an effect on **at least one outcome** need not be lower than the power of an unadjusted test 
+
+-   When your outcomes are independent or moderately correlated, may in fact be higher than than the power of an unadjusted test 
+::: 
+:::
+:::
+
+::: {.notes} 
+- Figure looks at disjunctive power: probability of rejecting at least one outcome when there is an effect on at least one outcome
+::: 
+
+# Family wise error rate (FWER)
+
+Let $X \sim F_X$ represent the data with which we test $H_{0j}: T_j(F_X) = 0$ for all $j = 1, 2, \ldots, M$.
+
+. . .
+
+Let $\text{Reject}(p_1, \ldots, p_M) \subseteq \{1 ,2, \ldots, M\}$ be a procedure mapping p-values for $H_{0j}$ to indices to be rejected.
+
+. . .
+
+Let $R(X) = |\text{Reject}(p_1(X), \ldots, p_M(X))|$. Then, the family wise error rate is:
+
+$$ \mathbb{P}_{F_X}(R(X) \geq 1).$$ 
+
+. . .
+
+We say that the procedure $\text{Reject}(\cdot)$ has (strong) control of the FWER if:
+
+$$ \underset{F_X \in \bigcup \limits_{j=1}^M \mathcal{F}_{0j}}{\sup}~  \mathbb{P}_{F_X}(R(X) \geq 1) \leq \alpha, ~~~ \text{ for all } 0 \leq \alpha \leq 1. $$
+
+::: {.notes} 
+
+- Strong control of the FWER is what we need to control false efficacy claims
+- Whenever it is possible to make a false positive, and in whatever configuration, and how many possibilities, we need to control the probability of making at least one mistake
+- But acrtually, weak control of the FWER - controlling if all hypohteses are true - is all we need to protect the catastrophe proportion 
+::: 
+
+
+
+# Bonferroni correction
+
+. . .
+
+**The idea**: Reject $H_{0j}$ using $X$ if $p_j(X) \leq \frac{\alpha}{M}$, for all $j = 1, 2, \ldots, M$.
+
+. . .
+
+Corresponds to the following rule: $$\text{Reject}(p_1, \ldots, p_M) = \left \{ j: p_j \leq \frac{\alpha}{M} \right \}.$$
+
+<br>
+
+. . .
+
+### Guarantees FWER control, so long as p-values are valid.
+
+
+::: {.incremental}
+-   Doesn't matter what the dependence structure between $p_1(X), \ldots, p_M(X)$ is
+-   Straightforward proof
+::: 
+
+::: {.notes} 
+
+- Reminder: also doesn't matter what combination of AND how many hypotheses are true! Strong FWER
+
+::: 
+
+# FWER bound for Bonferroni
+
+Let $F_X \in \bigcup \limits_{j=1}^M \mathcal{F}_{0j}$. Assume for simplicity that p-values are based on a pivot.
+
+. . .
+
+$$ 
+\begin{align} 
+\text{FWER} &= \mathbb{P}_{F_X}(R(X) \geq 1) \\ 
+&= \mathbb{P}_{F_X}\left ( \bigcup \limits_{j: F_X \in \mathcal{F}_{0j}} \{j \in \text{Reject}(X)\} \right ) \\ 
+&\leq \sum \limits_{j: F_X \in \mathcal{F}_{0j}} \mathbb{P}_{F_X}\left (j \in \text{Reject}(X) \right ) \\ 
+&= \sum \limits_{j: F_X \in \mathcal{F}_{0j}} \mathbb{P}_{F_X}\left (p_j(X) \leq \alpha/M \right ) \\ 
+&= \sum \limits_{j: F_X \in \mathcal{F}_{0j}} \alpha/M = \frac{\alpha |\{j: F_X \in \mathcal{F}_{0j}\}|}{M} \leq \frac{\alpha M}{M} = \alpha. 
+\end{align} 
+$$
+
+::: {.notes} 
+
+- If we use Bonferroni, can we bound FWER below alpha?  
+- F_X was arbitrary! Strong FWER
+
+::: 
+
+# Insights from Bonferroni bound
+
+Let's first look at the first inequality (union bound): 
+
+$$\mathbb{P}_{F_X}\left ( \bigcup \limits_{j: F_X \in \mathcal{F}_{0j}} \{j \in \text{Reject}(X)\} \right )  
+\leq \sum \limits_{j: F_X \in \mathcal{F}_{0j}} \mathbb{P}_{F_X}\left (j \in \text{Reject}(X) \right )$$
+
+. . .
+
+Assumption free; tight when events in $\{j \in \text{Reject}(X)\}_{F_X \in \mathcal{F}_{0j}}$ are disjoint.
+
+::: {.incremental} 
+-   Loose if p-values are independent
+-   Even looser if p-values are positively dependent
+-   Tighter if p-values are negatively dependent, tight if perfectly negatively dependent  
+:::
+
+# Insights from Bonferroni bound
+
+Let's look at the second inequality now: 
+
+$$\frac{\alpha |\{j: F_X \in \mathcal{F}_{0j}\}|}{M} \leq \frac{\alpha M}{M} = \alpha$$
+
+Tight when $|\{j: F_X \in \mathcal{F}_{0j}\}| = M$, i.e. $F_X$ satisfies *all* nulls. Otherwise loose: 
+
+. . .
+
+| # True Nulls       | 1      | 2      | 3      | 4      |
+|-------------|--------|--------|--------|--------|
+| LHS | 0.0125 | 0.0250 | 0.0375 | 0.0500 |
+| RHS | 0.05 | 0.05 | 0.05 | 0.05 | 
+
+. . .
+
+**Note**: If we knew the number of true nulls $M_0$, then we could safely divide by $M_0$ instead of $M$.
+
+# An idea for improving Bonferroni 
+
+Suppose $p_1(x) \leq \alpha/M$. Let $M_0 = |\{j: F_X \in \mathcal{F}_{0j}\}|$.  Consider two cases: 
+
+::: {.incremental}
+
+1. If $H_{01}$ false, then $M_0 \leq M-1$; could safely divide by $M-1$ instead of $M$ for $p_2(x), \ldots, p_m(x)$ 
+
+2. If $H_{01}$ true, then dividing by $M-1$ instead of $M$ for $p_2(x), \ldots, p_m$ may not give a valid bound. **But who cares**? $R(x) \geq 1$ no matter what we do with the rest of the p-values ... 
+::: 
+
+. . .
+
+**Key idea**: 
+
+::: {.incremental}
+- FWER control doesn't care how many false rejections we make. 
+- Once we make a false rejection, we're dead to FWER. 
+- So let's just make our rejections, and then behave as if all of those rejections are correct! 
+:::
+
+# Holm's method
+
+**The idea**: Order p-values $p_{(1)} \leq \ldots \leq p_{(M)}$: 
+
+::: {.incremental} 
+- If $p_{(1)} \leq \alpha/M$, reject $H_{0(1)}$; otherwise stop 
+
+- If $p_{(2)} \leq \alpha/(M-1)$, reject $H_{0(2)}$; otherwise stop 
+
+- Keep going, one p-value at a time 
+::: 
+
+. . .
+
+Corresponds to the following rule: $$\text{Reject}(p_1, \ldots, p_M) = \left \{ j : p_j \leq \min \{p_{(j)}: p_{(j)} > \alpha/(M+1 - j)\} \right \}.$$
+
+. . .
+
+### Still guarantees FWER control, so long as p-values are valid.
+
+::: {.notes} 
+- Step 2: we made a rejection, let's assume it's true. So there can be no more than M-1 hypotheses left. Let's use it! 
+- Find the largest p-value so that Holm's threshold lets you reject
+- Reject everything smaller than that 
+::: 
+
+
+# Holm is always more powerful
+
+```{r, echo=FALSE, fig.align="center"}
+library(scales)
+library(tidyr)
+
+thresholds <- data.frame(index=1:10, 
+											 bonferroni = rep(0.05/10, 10))
+thresholds$holm <- 0.05/(10 - thresholds$index+1)
+
+thresholds <- thresholds %>% pivot_longer(cols = c(bonferroni, holm), names_to = "Method")
+
+ggplot(thresholds, aes(x = index,y = value, group=Method)) + 
+	geom_line(aes(colour=Method, linetype=Method)) + 
+	theme_bw(base_size = 22) + 
+	ggtitle("Rejection thresholds for ordered p-values") +
+  xlab("Index") + ylab("Threshold") + 
+scale_x_continuous(breaks= pretty_breaks()) + 
+	ylim(c(-0.005, 0.06)) 
+
+```
+
+::: {.notes}
+- Holm always rejects more hypotheses. It has a bigger threshold! 
+- But both guarantee strong FWER control 
+::: 
+
+# Adjusted p-values
+
+
+**The idea**: Convert $p_1, \ldots, p_M$ to $\tilde p_1, \ldots, \tilde p_M$ so that $$\text{Reject}(p_1, \ldots, p_M) = \{j: \tilde p_j \leq \alpha\}$$ 
+
+See e.g. `stats::p.adjust()`. 
+
+<br> 
+
+. . .
+
+### More on this topic next week! 
+
+
+
+# Back to the beginning ...
+
+In the context of clinical trials and the FDA: does multiple testing cause problems? What problems? Do we need to "adjust for multiple testing"? How should we adjust? 
+
+::: {.incremental}
+
+-   If scientifically reasonable to think that the treatment needs to have an effect on all outcomes, then **no major problems** and **no adjustment needed**.
+
+-   If scientifically reasonable to think that the treatment just needs to have an effect on one or more outcomes, then **the catastrophe proportion is no longer guaranteed to be low**, and **we need to adjust in a way that controls FWER**.
+
+::: 
+
+. . .
+
+> **"I don't know, it depends on the scientific problem at hand."** - My annoying partner, whenever I ask him ANY question involving statistics.
+
+. . .
+
+What about other scientific contexts? We will see one more next week ... 
+
+# What about confidence intervals?
+
+> **The emphasis of this guidance is not on the confidence interval, but rather on the test of a
+hypothesis, where the issue is whether a treatment effect on a particular endpoint exists at all.
+Although confidence intervals are also critical to the interpretation of an effect when one exists,
+determining the confidence interval with some of the statistical methods for managing
+multiplicity described in section IV is complex.** - FDA, Multiple Endpoints in Clinical Trials: Guidance for Industry  
+
+
+::: {.incremental} 
+- FWER definition applied to confidence intervals: probability of at least one interval not covering 
+
+- We will discuss this more when we get to selective inference 
+
+- Is this relevant to the science at hand? Probably, but FDA punts, and so does the EMA ... 
+::: 
+
+::: {.notes} 
+- If time: what do you think? 
+::: 
+

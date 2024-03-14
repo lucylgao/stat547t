@@ -1,0 +1,295 @@
+---
+title: "Topic 3: Multiple Testing and the Microarray Revolution"
+author: "Lucy Gao"
+date: "Jan 23 2024"
+date-format: long
+format: 
+  revealjs:
+    chalkboard: true
+    slide-number: c/t
+    width: 1600
+    height: 900
+    echo: true
+    theme: [default, custom.scss]
+    show-notes: false
+---
+
+# Learning objectives for today
+
+-   Introduce scientific problems involving multiple testing/comparisons in genomics
+-   Introduce false discovery rate
+-   Introduce **one** method for how to control FDR (Benjamini-Hochberg)
+-   Learn about why FDR control was popularized in genomics
+-   Increase understanding the factors that determine whether and how we adjust our inferences when making multiple inferences
+
+# Recall: Multiple Testing
+
+**My definition**: Whenever we conduct more than one hypothesis test in a single analysis, and look at the outcome of all of them.
+
+-   Does this cause problems?
+-   And if so, what are they?
+
+> **"I don't know, it depends on the scientific problem at hand."** - My annoying partner, whenever I ask him ANY question involving statistics.
+
+# Recall: Phase III clinical trials
+
+**Relatively few** hypotheses tested:
+
+-   One hypothesis per measured endpoint/outcome
+
+Hypotheses tested are **carefully chosen**:
+
+-   Treatments go through a very extensive screening process before reaching Phase III
+-   Endpoints are very carefully chosen based on clinical considerations
+
+False positives are **extremely** costly:
+
+-   Last stage before the treatment goes on market
+-   Results inform market labelling
+-   Federal agency involving medical considerations: ENORMOUS potential for political fallout
+
+# Today's science
+
+```{r, echo = FALSE, fig.align='center'}
+knitr::include_graphics("img/microarray.png")
+```
+
+A VERY different setting than last week's science ...
+
+# Microarray chip
+
+::: columns
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align='center', out.width="70%"}
+knitr::include_graphics("img/microarray-chip.png")
+```
+
+Part of a cDNA microarray chip, from Johanna Hardin (2005) "Microarray Data from a Statistician's Point of View"
+:::
+
+::: {.column width="50%"}
+-   One gene in each spot
+-   Intensity represents activity level of that gene
+-   Red = Cell sample 1 has higher activity
+-   Green = Cell sample 2 has higher activity
+-   Yellow = Cell sample 1 and 2 have similar activity
+-   Black = no activity in either cell sample
+:::
+:::
+
+# Microarray data
+
+::: columns
+::: {.column width="50%"}
+```{r, echo = FALSE, fig.align='center', out.width="70%"}
+knitr::include_graphics("img/microarray-data.png")
+```
+
+Subset of microarray data from Johanna Hardin (2005) "Microarray Data from a Statistician's Point of View"
+:::
+
+::: {.column width="50%"}
+-   Treatment = older yeast cells (dyed red)
+-   Control = younger yeast cells (dyed green)
+-   We care about **multiplicative** differences in expected gene activity levels per condition =\> log-scale analysis
+-   Biological replicates
+-   I'm confused. Figure this out
+:::
+:::
+
+# Rough structure of an experiment
+
+-   Test for no difference in mean expression levels between treatment and control for every gene
+-   Note: 10s or 100,000s genes!
+-   After testing, very common to follow up on genes claimed to be "differentially expressed"
+-   Eg. follow-up = separate "validation experiments" (often laboratory based, costs time and money)
+
+**This framework is frequently applied to data from newer technologies too** - e.g. next-gen sequencing, single-cell sequencing etc.
+
+# Comparing to clinical trials
+
+|                      | Clinical Trials   | Genomics               |
+|----------------------|-------------------|------------------------|
+| Number of tests?     | A few             | Lots                   |
+| Hypothesis selection | Carefully curated | Little to no screening |
+| False positives?     | Absolutely awful  | Can live with a few    |
+
+**The science is different, so why should we expect the desired inferential properties to be the same?**
+
+# Multiple testing philosophy
+
+-   We want to get a moderately sized list of genes that seem like promising candidates for further investigation, and we want it fast and cheap.
+
+-   The "cost" of a false positive is that we waste time and money chasing a red herring in validation experiment.
+
+-   **Key idea**: We can probably live with (say) 10% of our resources going to waste in the follow-up phase.
+
+-   After all, we have already saved a bunch of time and money by not investigating every gene in the full list!
+
+# Contingency table for M tests
+
+Suppose that we test $M$ hypotheses based on $X \sim \mathbb{F}$. 
+
+|       | Null not  rejected | Null rejected | Total |
+|-------|--------------|----------|-------|
+| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
+| Null is false | $M_1 - B$    | $B$      | $M_1$ |
+| Total | $M - R$      | $R$      | $M$   |
+
+Terminology: 
+
+- $M_0$ is the number of true null hypotheses. (Fixed but unknown)
+- $M_1$ is the number of false null hypotheses. (Fixed but unknown)
+- $A$ is the number of false discoveries. (Random variable)
+- $B$ is the number of true discoveries. (Random variable) 
+- $R$ is the number of discoveries. (Random variable)
+
+# FWER and the contingency table 
+
+Suppose that we test $M$ hypotheses based on $X \sim \mathbb{F}$. 
+
+|       | Null not  rejected | Null rejected | Total |
+|-------|--------------|----------|-------|
+| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
+| Null is false | $M_1 - B$    | $B$      | $M_1$ |
+| Total | $M - R$      | $R$      | $M$   |
+
+Family wise error rate: 
+
+$$\text{FWER}(\mathbb{F}) = P_{X \sim \mathbb{F}}(A \geq 1)$$ 
+We are calculating **horizontally**: FWER doesn't about the second row at all.  
+
+# FDP and FDR
+
+Suppose that we test $M$ hypotheses based on $X \sim \mathbb{F}$. 
+
+|       | Null not  rejected | Null rejected | Total |
+|-------|--------------|----------|-------|
+| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
+| Null is false | $M_1 - B$    | $B$      | $M_1$ |
+| Total | $M - R$      | $R$      | $M$   |
+
+Another angle is to calculate **vertically**. Define the (random) **false discovery proportion** as:  
+
+$$\text{FDP} \equiv \begin{cases} A/R &, R > 0 \\ 0 &, R = 0 \end{cases}$$ 
+The **false discovery rate** is 
+$$ \text{FDR}(\mathbb{F}) = \mathbb{E}_{X \sim \mathbb{F}}[\text{FDP}].$$ 
+
+# Back to the science 
+
+**Recall**: "We can probably live with (say) 10% of our resources going to waste." 
+
+Assuming that each discovery costs $C$ resource units, the proportion of our resources going to waste on follow-ups based on $X$ is: 
+$$ AC/RC = A/R = \text{FDP}$$ 
+
+
+And that means that if we were to **repeat** the process of microarray experiment => follow-up investigation, then on average across these repeats, our proportion of waste is ... 
+$$ \mathbb{E}_{X \sim \mathbb{F}}(A/R) = \text{FDR}$$ 
+
+**A reasonable scientific and statistical goal in this context is to control the false discovery rate.** 
+
+# FDR is more liberal than FWER
+
+Controlling FWER implies that we control FDR, but not vice versa, because: 
+$$ \text{FWER} = \mathbb{E}[1\{ A \geq 1\}] \geq \text{FDR} = \mathbb{E}[\text{FDP}],$$ 
+with equality when all null hypotheses are true. Suffices to show inequality always holds for what's inside the expectation.
+
+Two cases: 
+
+1. $A = 0$ (we reject no true null hypotheses). Then $1\{ A \geq 1\} = 0$, and $\text{FDP} = 0$ and so $1\{ A \geq 1\} = \text{FDP}.$
+2. $A \geq 1$ (we reject at least one true null hypothesis). Then, $1\{ A \geq 1\} = 1$. Also, $R \geq A > 0$, so $\text{FDP} = \frac{A}{R} \leq 1$ . Thus, $1\{ A \geq 1\} \geq \text{FDP}$. 
+
+
+Equality is straightforward: if every null hypothesis is true, then every rejection is a false rejection, so FDP = 1 if $A \geq 0$ and $0$ otherwise. 
+
+# "Naive" approach 
+
+Let's say we test each of the $M$ null hypotheses with a "classical" method that returns valid p-values.  What happens to FDR? 
+
+|       | Null not  rejected | Null rejected | Total |
+|-------|--------------|----------|-------|
+| Null is true  | $M_0 - B$    | $A$      | $M_0$ |
+| Null is false | $M_1 - B$    | $B$      | $M_1$ |
+| Total | $M - R$      | $R$      | $M$   |
+
+Assuming that we reject at nominal level $\alpha$, we described assumptions last week that make  FWER $> \alpha$. We also have FDP = FWER when all null hypotheses are true, so when all null hypotheses are true, FDP $> \alpha$. 
+
+- This is not a super satisfying answer for how bad it can get; we will explore this further on Thursday lab
+
+# Benjamini-Hochberg (BH) procedure
+
+
+# Example 
+
+# A picture
+
+# p-value adjustments
+
+# Aside: Empirical Bayes 
+
+
+
+# Relaxing assumptions 
+
+
+# Your turn: interpretation 
+
+Imagine you are working with a genome scientist to analyze their microarray data. You apply the BH procedure at level $10\%$ to their data set, and reject 100 null hypotheses. Your collaborator says: 
+
+> "Oh, so about 10 genes out of that 100 really are differentially expressed?" 
+
+What is your answer? 
+
+# FDP Variability
+
+> "We have focused a lot of discussion up to this point on the mean. But what about the variance?" - Jim Zidek, paraphrased
+
+- Your collaborator is asking a question that cannot be answered without knowing the **variability** of the FDP. 
+
+- **FDR control says absolutely nothing about** $\text{Var}[FDP]$
+
+- In fact, FDP can be quite variable across repeated experiments, especially if the p-values from each test are dependent. 
+
+- We may explore this further in Thursday lab; you may also learn more about this if you select the right talk for your final presentation
+
+# Another puzzle 
+
+Imagine you are working with a genome scientist to analyze their microarray data. You apply the BH procedure at level $10\%$ to their data set, and reject 100 null hypotheses. Your collaborator says: 
+
+> "I've decided to focus on just the 10 genes in that rejection list that have the smallest unadjusted p-values. What can we say about those 10 genes? " 
+
+What is your answer? 
+
+What if instead they said: 
+
+> "I've decided to focus on just the 10 genes in that rejection list that are in a particular biological pathway. What can we say about those 10 genes?" 
+
+What is your answer? 
+
+
+# No subset property 
+
+
+Contrast this to FWER: easy to show that FWER control on all $M$ hypotheses implies FWER control on the hypotheses in $\{1, 2, \ldots, M\} \cap \mathcal{I}$ for any subset $\mathcal{I}$. (More on this in selective inference - next week!)
+
+# Interpretation of "adjusted p-values" 
+
+# FDR or something else? 
+
+Many variants: 
+
+
+
+# BH or something else? 
+
+Knockoffs
+
+# Opportunities for statisticians 
+
+# Next class 
+
+**Computer lab**: 
+
+
+Bring a CHARGED laptop!! 
+
