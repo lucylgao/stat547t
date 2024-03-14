@@ -1,0 +1,112 @@
+---
+title: "Lab 4: Inference after variable selection in regression"
+format: html
+toc: true
+---
+
+**Grading:** Turn in your first attempt at the tasks for a binary "fair attempt or not" grade on Canvas. That is, your first attempt need not be neat or correct.
+
+**Done early?** Come discuss your work with me and I'll give you one suggestion on how to improve what you've got in the remaining time. Iterate if necessary.
+
+## Scientific Context 
+
+Suppose that you are working with a collaborator who is interested in identifying risk factors associated with a continuous outcome. The design of the study recruits 100 patients and measures 25 continuous covariates. They tell you that they broadly plan to analyze the study data by:
+
+-   Using forward stepwise to select variables of interest
+
+-   Fitting linear regression to the selected variables and reporting the p-values.
+
+Today you will investigate the selective type I error rate and coverage of this approach, to help you advise your collaborator on their data analysis plan. 
+
+## Set-up functions
+
+### Data generation
+
+I've generated an arbitrary fixed, continuous design matrix $X$ by sampling from a multivariate normal distribution. **Do not at any point repeat this sampling step in your simulation! That will make it random-X rather than fixed-X regression.** 
+
+```{r, message = FALSE}
+n <- 100 
+p <- 25
+
+library(dplyr) 
+
+rho <- 0.3
+Sigma <- (1-rho)*diag(p) + rho*matrix(1, p, p)
+
+set.seed(123)
+X <-  MASS::mvrnorm(n, rep(0, p), Sigma) %>% 
+	as_tibble(.name_repair = \(x) stringr::str_c("X", 1:p)) 
+```
+
+The following is a function that randomly generates $Y$ with $\mu_i = \mathbb{E}[Y_i] = 0.5[X_1]_i + 0.2[X_2]_i - 0.3[X_{10}]_i.$
+
+```{r} 
+generate_model_and_data <- function(X, scale_err_var) { 
+		response_and_mean <- X %>% rowwise() %>% 
+			mutate(mu = 0.5*X1 +0.2*X3 - 0.3*X10, 
+						 y = mu + sqrt(1/scale_err_var)*rt(1, df=5)) %>% relocate(y, everything())
+		
+		return(list(data = response_and_mean %>% select(-mu), 
+								mu = response_and_mean %>% pull(mu)))
+}
+
+set.seed(1)
+(model_and_data <- generate_model_and_data(X, 2.5))
+```
+
+### Forward stepwise and p-value calculation 
+
+Here is code that does 4 steps of forward stepwise on data, then does "agnostic linear regression" as discussed in class to produce p-values and confidence intervals for the regression of the outcome on the four (or fewer) selected variables. 
+
+```{r} 
+fit_fs_4steps <- function(data) { 
+	empty_model <- lm(y ~ 1, data = data)
+	best_after_fs <- step(empty_model, direction="forward", 
+												scope = formula(lm(y~., data=data)), 
+												steps=4, trace=0) 
+	
+	results <- best_after_fs %>% broom::tidy() 
+	
+	results$std.error <-  sqrt(diag(sandwich::vcovHC(best_after_fs)))
+	
+	results %>% filter(term != "(Intercept)") %>% mutate(vars = as.integer(stringr::str_remove(term, "X"))) %>% mutate(statistic = estimate/std.error, 
+					 p.value = 2*pnorm(-abs(statistic)), 
+					 ci.lower = estimate - qnorm(0.975)*std.error, 
+					 ci.upper = estimate + qnorm(0.975)*std.error) 		%>% select(vars, estimate, p.value, ci.lower, ci.upper) %>% arrange(vars)
+	
+}
+
+model_and_data %>% .[["data"]] %>% fit_fs_4steps()
+
+(fs_results <- fit_fs_4steps(model_and_data$data))
+```
+
+### Task 1 
+
+In task 2, you will be asked to set `scale_err_var` to 1, and calculate the selective type I error rate for $H_0: [\beta^*_{\{1, 3, 7, 10\}}]_4 = 0$ (i.e. the slope coefficient for variable 10) and the selective coverage for each of the three slope components of $\beta^*_{\{1, 3, 10\}}$ (i.e. the slope coefficient for variables 1 3 and 10). 
+
+Write some code that will take the results of the forward stepwise analysis on a data set that has mean response vector $\mu$ and output a table containing all the components you will need per simulation in order to calculate selective type I error and coverage. 
+
+Here's the skeleton of my function: 
+
+```{r, eval = FALSE} 
+
+get_evaluations <- function(results, X, mu) { 
+	# YOUR CODE HERE 
+}
+
+get_evaluations(fs_results, X, model_and_data$mu)
+```
+
+### Task 2 
+
+Using the code that will be provided after the completion of Task 1 (or writing your own code if you prefer), calculate with `scale_err_var = 1`: 
+
+- the selective type I error rate for $H_0: [\beta^*_{\{1, 3, 7, 10\}}]_3 = 0$ (i.e. the slope coefficient for variable 7)
+- the selective coverage for each of the three slope components of $\beta^*_{\{1, 3, 10\}}$ (i.e. the slope coefficient for variables 1 3 and 10)
+- The probability of selecting each combination of 4 or fewer variables in $X_1, \ldots, X_{25}$. 
+
+
+Repeat with `scale_err_var = 100`. 
+
+Think about and comment on your findings. 
