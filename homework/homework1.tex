@@ -1,0 +1,223 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else  
+    % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+% Make \paragraph and \subparagraph free-standing
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\makeatletter
+\@ifpackageloaded{tcolorbox}{}{\usepackage[skins,breakable]{tcolorbox}}
+\makeatother
+\makeatletter
+\@ifundefined{shadecolor}{\definecolor{shadecolor}{rgb}{.97, .97, .97}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\makeatother
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same} % disable monospaced font for URLs
+\hypersetup{
+  pdftitle={STAT 547T Homework 1},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+\title{STAT 547T Homework 1}
+\author{}
+\date{}
+
+\begin{document}
+\maketitle
+\ifdefined\Shaded\renewenvironment{Shaded}{\begin{tcolorbox}[boxrule=0pt, sharp corners, breakable, interior hidden, borderline west={3pt}{0pt}{shadecolor}, enhanced, frame hidden]}{\end{tcolorbox}}\fi
+
+\textbf{Instructions}: Typeset your solutions and submit them as a PDF
+via Canvas.
+
+\textbf{Grading}: Problems are equally weighted. One problem will be
+fully graded, and the others will be graded on a binary scale (full
+points or no points) based on effort.
+
+\hypertarget{problem-1}{%
+\subsection{Problem 1}\label{problem-1}}
+
+Suppose that we test \(H_0: T(F_X) \in \Theta_0\) using a random
+variable \(X \sim F_X\). Let
+\[\mathcal{F}_0 = \{F: T(F) \in \Theta_0\}\] and
+\[p(x) = \underset{F_X \in \mathcal{F}_0}{\sup} \mathbb{P}_{F_X}(S(X) \geq S(x))\]
+for some scalar-valued test statistic function \(S(\cdot)\).
+
+Show that \(p(X)\) is a valid p-value, i.e.~that
+\[\underset{F_X \in \mathcal{F}_0}{\sup} ~ \mathbb{P}_{F_X}(p(X) \leq \alpha) \leq \alpha, ~~~ \forall ~ 0 \leq \alpha \leq 1.\]
+
+\hypertarget{problem-2}{%
+\subsection{Problem 2}\label{problem-2}}
+
+Suppose that we test \(H_{0j}: T_j(F_X) \in \Theta_0\) for all
+\(j = 1, 2, \ldots, M\) using a random variable \(X \sim F_X\). Define
+the following notation:
+
+\begin{longtable}[]{@{}llll@{}}
+\toprule\noalign{}
+& \(H_{0j}\) retained & \(H_{0j}\) rejected & Total \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+\(H_{0j}\) true & TN\((X)\) & FD\((X)\) & \(M_0\) \\
+\(H_{0j}\) false & FN\((X)\) & TD\((X)\) & \(M_1\) \\
+Total & \(N(X)\) & \(R(X)\) & \(M\) \\
+\end{longtable}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  Show that if
+  \[\mathbb{P}_{F_X}(\text{Reject } H_{0j} \text{ using } X) = \alpha, ~~~\text{ for all } F_X \in \mathcal{F}_{0j} \text{ and } 0 \leq \alpha \leq 1 \text{ and } j = 1, 2, \ldots, M,\]
+  then
+  \[ \mathbb{E}_{F_X} \left [ \frac{\mathrm{FD}(X)}{M_0} \right ] = \alpha, ~~~\text{ for all } 0 \leq \alpha \leq 1.\]
+\item
+  Let \(\Lambda_1 = \{j: H_{0j} \text{ false} \}\), and define\\
+  \[\text{Power}_j = \mathbb{P}_{F_X}(\text{Reject } H_{0j} \text{ using } X), ~~~ \text{ for all } j \in \Lambda_1.\]
+  Show that
+  \[\mathbb{E}_{F_X} \left [ \frac{\mathrm{TD}(X)}{M_1} \right ] = \frac{\sum \limits_{j \in \Lambda_1} \text{Power}_j}{|\Lambda_1|}.\]
+\end{enumerate}
+
+\hypertarget{problem-3}{%
+\subsection{Problem 3}\label{problem-3}}
+
+In the same setting as Problem 2, let
+\[\text{FWER} = \mathbb{P}_{F_X} ( \text{FD}(X) \geq 1)\] and
+\[ \text{FDP}(X) = \begin{cases} \frac{\text{FD}(X)}{R(X)}, & \text{ if } R(X) > 0, \\ 
+0, & \text{ otherwise.}
+\end{cases}, ~~~~ \text{FDR} = \mathbb{E}_{F_X}[FDP(X)].\] Show that
+\[ \text{FWER} \geq \text{FDR}, \] for any choice of \(F_X\).
+
+
+
+\end{document}
