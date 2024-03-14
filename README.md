@@ -9,7 +9,6 @@ I found that there was a lot of material seemingly targeted at Crowd 1 (textbook
 
 I found some material seemingly targeted at Crowd 2, especially in multiple testing. These were typically made for  domain scientists (e.g. genomics researchers) and consequently shorter and less in-depth than was appropriate for a statistics graduate student, or even for a domain scientist looking to get a deeper statistical understanding of the area. 
 
-[Nothing seemed to be the right fit!](https://twitter.com/BetterCallSaul/status/702517442845736960)  
-So I rolled up my sleeves and decided to make all the material from scratch. 
+[Nothing seemed to be the right fit!](https://twitter.com/BetterCallSaul/status/702517442845736960) So I rolled up my sleeves and decided to make all the material from scratch. 
 
 **This repository contains the very first iteration of the course (UBC Term 2024W2), with all the polish issues and mistakes that implies!** Any feedback you might have is welcome! 
